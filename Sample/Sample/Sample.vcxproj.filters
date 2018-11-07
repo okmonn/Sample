@@ -16,6 +16,24 @@
     <Filter Include="Application">
       <UniqueIdentifier>{b0bdc03e-d378-43c8-a6df-120634ec9659}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Union">
+      <UniqueIdentifier>{df33e6f0-75c8-4c1b-8b75-a3fea12ed143}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{c0ae16af-7575-45c5-abf6-e8fdc4c83ce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Device">
+      <UniqueIdentifier>{0341d0ad-9dde-40bd-a9b6-d41bf1d4fe3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="etc">
+      <UniqueIdentifier>{9e3c41d4-3b41-4aa6-8a7a-bec1f7e5ef9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Queue">
+      <UniqueIdentifier>{15864622-c00d-4a53-b424-f0dec9643a55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="List">
+      <UniqueIdentifier>{5b2391c5-3d60-4096-882f-0f3b976b2fdd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -24,10 +42,40 @@
     <ClCompile Include="Application\Application.cpp">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="Window\Window.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Device\Device.cpp">
+      <Filter>Device</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Queue\Queue.cpp">
+      <Filter>Queue</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\List\List.cpp">
+      <Filter>List</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Application.h">
       <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\Window.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Release.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Device\Device.h">
+      <Filter>Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2\Vector2.h">
+      <Filter>etc</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Queue\Queue.h">
+      <Filter>Queue</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\List\List.h">
+      <Filter>List</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

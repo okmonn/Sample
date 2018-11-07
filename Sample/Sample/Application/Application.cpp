@@ -1,48 +1,83 @@
 #include "Application.h"
-#include <Windows.h>
+#include "../Window/Window.h"
+#include "Device/Device.h"
+#include "Queue/Queue.h"
+#include "List/List.h"
+#include <d3d12.h>
 
-void* Application::handle = nullptr;
+#pragma comment(lib, "d3d12.lib")
+
+std::shared_ptr<Device>dev;
+std::shared_ptr<Queue>q;
+std::shared_ptr<List>list;
 
 // コンストラクタ
-Application::Application()
+Application::Application(const unsigned int & width, const unsigned int & height) : 
+	win(std::make_unique<Window>(width, height)), width(width), height(height)
 {
-	WNDCLASSEX windowClass = { 0 };
-	windowClass.cbSize = sizeof(WNDCLASSEX);
-	windowClass.style = CS_HREDRAW | CS_VREDRAW;
-	windowClass.lpfnWndProc = WindowProc;
-	windowClass.hInstance = hInstance;
-	windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-	windowClass.lpszClassName = L"DXSampleClass";
-	RegisterClassEx(&windowClass);
-
-	RECT windowRect = { 0, 0, static_cast<LONG>(pSample->GetWidth()), static_cast<LONG>(pSample->GetHeight()) };
-	AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
-
-	// Create the window and store a handle to it.
-	handle = CreateWindow(
-		windowClass.lpszClassName,
-		pSample->GetTitle(),
-		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
-		windowRect.right - windowRect.left,
-		windowRect.bottom - windowRect.top,
-		nullptr,        // We have no parent window.
-		nullptr,        // We aren't using menus.
-		hInstance,
-		pSample);
-	instance = windowClass.hInstance;
+#ifdef _DEBUG
+	ID3D12Debug* debug = nullptr;
+	D3D12GetDebugInterface(IID_PPV_ARGS(&debug));
+	debug->EnableDebugLayer();
+#endif
+	dev = std::make_shared<Device>();
+	q = std::make_shared<Queue>(dev, D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT);
+	list = std::make_shared<List>(dev, D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT);
 }
 
 // デストラクタ
 Application::~Application()
 {
-	UnregisterClass(name, instance);
+}
+
+// メッセージの確認
+bool Application::CheckMsg(void)
+{
+	static MSG msg{};
+
+	if (msg.message == WM_QUIT)
+	{
+		return false;
+	}
+	else
+	{
+		//呼び出し側スレッドが所有しているウィンドウに送信されたメッセージの保留されている物を取得
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			//仮想キーメッセージを文字メッセージに変換
+			TranslateMessage(&msg);
+			//1つのウィドウプロシージャにメッセージを送出する
+			DispatchMessage(&msg);
+		}
+	}
+
+	return true;
 }
 
 // ウィンドウのコールバック
-long * __stdcall Application::WindowProc(void * hWnd, unsigned int message, unsigned int * wParam, long * lParam)
+long Application::WindowProc(void * hWnd, unsigned int message, long wParam, long lParam)
 {
-	return 0;
+	switch (message)
+	{
+	case WM_CREATE:
+		//// Save the DXSample* passed in to CreateWindow.
+		//LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
+		//SetWindowLongPtr(reinterpret_cast<HWND>(hWnd), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pCreateStruct->lpCreateParams));
+		break;
+
+	case WM_PAINT:
+		// 処理
+		break;
+
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+
+	default:
+		break;
+	}
+
+	return DefWindowProc((HWND)hWnd, message, wParam, lParam);
 }
+
 

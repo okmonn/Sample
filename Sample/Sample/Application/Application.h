@@ -1,29 +1,38 @@
 #pragma once
+#include <memory>
+
+class Window;
 
 class Application
 {
 public:
 	// コンストラクタ
-	Application();
+	Application(const unsigned int& width = 640, const unsigned int& height = 480);
 	// デストラクタ
 	~Application();
 
-	// ウィンドウハンドルの取得
-	static void* GetHwnd(void) {
-		return handle;
+	// メッセージの確認
+	bool CheckMsg(void);
+
+	// ウィンドウのコールバック
+	static long __stdcall WindowProc(void* hWnd, unsigned int message, long wParam, long lParam);
+
+	// ウィンドウ縦幅の取得
+	unsigned int GetWidth(void) const {
+		return width;
+	}
+	// ウィンドウ横幅
+	unsigned int GetHeight(void) const {
+		return height;
 	}
 
-protected:
-	// ウィンドウのコールバック
-	static long* __stdcall WindowProc(void* hWnd, unsigned int message, unsigned int* wParam, long* lParam);
-
 private:
-	// ウィンドウハンドル
-	static void* handle;
+	// ウィンドウ
+	std::unique_ptr<Window>win;
 
-	// ウィンドウインスタンス
-	void* instance;
+	// ウィンドウ横幅
+	unsigned int width;
 
-	// ウィンドウ名
-	wchar_t* name;
+	// ウィンドウ縦幅
+	unsigned int height;
 };
