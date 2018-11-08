@@ -34,6 +34,15 @@
     <Filter Include="List">
       <UniqueIdentifier>{5b2391c5-3d60-4096-882f-0f3b976b2fdd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Swap">
+      <UniqueIdentifier>{c1e3c609-6f84-42d7-b876-087de6cbe85d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderTarget">
+      <UniqueIdentifier>{2f8b1cdb-e8ca-45bc-87f2-9fb4cfe90d65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fence">
+      <UniqueIdentifier>{1efa4d2a-b068-42b6-8f10-af9bc27f3f42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -53,6 +62,15 @@
     </ClCompile>
     <ClCompile Include="Application\List\List.cpp">
       <Filter>List</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Swap\Swap.cpp">
+      <Filter>Swap</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Render\Render.cpp">
+      <Filter>RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Fence\Fence.cpp">
+      <Filter>Fence</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +94,15 @@
     </ClInclude>
     <ClInclude Include="Application\List\List.h">
       <Filter>List</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Swap\Swap.h">
+      <Filter>Swap</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Render\Render.h">
+      <Filter>RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Fence\Fence.h">
+      <Filter>Fence</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

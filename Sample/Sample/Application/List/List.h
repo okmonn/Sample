@@ -2,8 +2,12 @@
 #include <memory>
 
 enum D3D12_COMMAND_LIST_TYPE : int;
+enum D3D12_RESOURCE_STATES : int;
 struct ID3D12CommandAllocator;
 struct ID3D12GraphicsCommandList;
+struct ID3D12Resource;
+struct ID3D12PipelineState;
+struct ID3D12RootSignature;
 class Device;
 
 class List
@@ -13,6 +17,18 @@ public:
 	List(std::weak_ptr<Device>dev, const D3D12_COMMAND_LIST_TYPE& type);
 	// デストラクタ
 	~List();
+
+	// リセット
+	void Reset(ID3D12PipelineState* pipe);
+
+	// ビューポートのセット
+	void SetViewport(void);
+
+	// シザーのセット
+	void SetScissor(void);
+
+	// バリアのセット
+	void SetBarrier(const D3D12_RESOURCE_STATES& befor, const D3D12_RESOURCE_STATES& affter, ID3D12Resource* rsc);
 
 	// コマンドアロケータの取得
 	ID3D12CommandAllocator* GetAllo(void) const {

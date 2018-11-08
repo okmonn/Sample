@@ -17,22 +17,29 @@ public:
 	// ウィンドウのコールバック
 	static long __stdcall WindowProc(void* hWnd, unsigned int message, long wParam, long lParam);
 
+	// ウィンドウハンドルの取得
+	static void* GetWinHandle(void) {
+		return winHandle;
+	}
 	// ウィンドウ縦幅の取得
-	unsigned int GetWidth(void) const {
+	static unsigned int GetWidth(void) {
 		return width;
 	}
 	// ウィンドウ横幅
-	unsigned int GetHeight(void) const {
+	static unsigned int GetHeight(void) {
 		return height;
 	}
 
 private:
 	// ウィンドウ
-	std::unique_ptr<Window>win;
+	std::shared_ptr<Window>win;
+
+	// ウィンドウハンドル
+	static void* winHandle;
 
 	// ウィンドウ横幅
-	unsigned int width;
+	static unsigned int width;
 
 	// ウィンドウ縦幅
-	unsigned int height;
+	static unsigned int height;
 };

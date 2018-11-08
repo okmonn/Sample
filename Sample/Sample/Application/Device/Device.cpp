@@ -43,25 +43,20 @@ long Device::CreateFactory(void)
 // デバイスの生成
 long Device::CreateDev(void)
 {
-	auto hr = S_OK;
 	for (unsigned int adapterIndex = 0; factory->EnumAdapters1(adapterIndex, &adapter) != DXGI_ERROR_NOT_FOUND; ++adapterIndex)
 	{
 		for (auto& i : levels)
 		{
-			hr = D3D12CreateDevice(adapter, i, IID_PPV_ARGS(&dev));
+			auto hr = D3D12CreateDevice(adapter, i, IID_PPV_ARGS(&dev));
 			if (hr == S_OK)
 			{
 				OutputDebugString(_T("\nデバイスの生成：成功\n"));
-				break;
+				return hr;
 			}
-		}
-		if (hr == S_OK)
-		{
-			break;
 		}
 	}
 
-	return hr;
+	return S_FALSE;
 }
 
 // 初期化
