@@ -1,11 +1,7 @@
 #include "Application.h"
 #include "../Window/Window.h"
-#include "Device/Device.h"
-#include "Queue/Queue.h"
-#include "List/List.h"
-#include "Swap/Swap.h"
-#include "Render/Render.h"
-#include "Fence/Fence.h"
+#include "../Input/Input.h"
+#include "Union/Union.h"
 #include <d3d12.h>
 #include <dxgi1_6.h>
 
@@ -14,13 +10,7 @@
 void* Application::winHandle     = nullptr;
 unsigned int Application::width  = 0;
 unsigned int Application::height = 0;
-
-std::shared_ptr<Device>dev;
-std::shared_ptr<Queue>q;
-std::shared_ptr<List>list;
-std::shared_ptr<Swap>swap;
-std::shared_ptr<Render>ren;
-std::shared_ptr<Fence>fen;
+std::unique_ptr<Union> Application::un = nullptr;
 
 // コンストラクタ
 Application::Application(const unsigned int & width, const unsigned int & height)
@@ -33,13 +23,9 @@ Application::Application(const unsigned int & width, const unsigned int & height
 	this->width  = width;
 	this->height = height;
 
-	win = std::make_shared<Window>(&winHandle);
-	dev = std::make_shared<Device>();
-	q = std::make_shared<Queue>(dev, D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT);
-	list = std::make_shared<List>(dev, D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT);
-	swap = std::make_shared<Swap>(dev, q);
-	ren = std::make_shared<Render>(dev, list, swap);
-	fen = std::make_shared<Fence>(dev, q);
+	win   = std::make_unique<Window>(&winHandle);
+	input = std::make_unique<Input>();
+	un    = std::make_unique<Union>();
 }
 
 // デストラクタ
@@ -71,35 +57,27 @@ bool Application::CheckMsg(void)
 	return true;
 }
 
+// キーの入力
+bool Application::CheckKey(const int & i)
+{
+	return input->CheckKey(i);
+}
+
 // ウィンドウのコールバック
 long Application::WindowProc(void * hWnd, unsigned int message, long wParam, long lParam)
 {
-	static float color[] = { 1,1,1,1 };
 	switch (message)
 	{
 	case WM_CREATE:
-		//// Save the DXSample* passed in to CreateWindow.
-		//LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
-		//SetWindowLongPtr(reinterpret_cast<HWND>(hWnd), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pCreateStruct->lpCreateParams));
 		break;
 
 	case WM_PAINT:
 		// 処理
-		list->Reset(nullptr);
-		list->SetViewport();
-		list->SetScissor();
-		list->SetBarrier(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET,
-			ren->GetRsc(swap->Get()->GetCurrentBackBufferIndex()));
-		
-		ren->SetRender(nullptr, color);
-		list->SetBarrier(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT,
-			ren->GetRsc(swap->Get()->GetCurrentBackBufferIndex()));
-
-		list->GetList()->Close();
-		
-		q->Get()->ExecuteCommandLists(1, (ID3D12CommandList**)(list->GetList()));
-		swap->Present();
-		fen->Wait();
+		if (un != nullptr)
+		{
+			un->Set();
+			un->Do();
+		}
 		break;
 
 	case WM_DESTROY:

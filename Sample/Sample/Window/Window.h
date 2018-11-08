@@ -1,4 +1,5 @@
 #pragma once
+#include "../etc/tString.h"
 
 class Window
 {
@@ -9,7 +10,7 @@ public:
 	~Window();
 
 	// タイトル名の変更
-	void ChangeTitle(void** handle, const wchar_t* title);
+	void ChangeTitle(void** handle, const std::tstring& title);
 
 private:
 	// ウィンドウの生成

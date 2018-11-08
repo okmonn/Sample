@@ -5,7 +5,7 @@ int main()
 {
 	Application a(640, 480);
 
-	while (a.CheckMsg())
+	while (a.CheckMsg() && a.CheckKey(INPUT_ESCAPE) == false)
 	{
 
 	}

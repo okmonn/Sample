@@ -18,6 +18,9 @@ public:
 	// デストラクタ
 	~List();
 
+	// コマンドリストを閉じる
+	void Close(void);
+
 	// リセット
 	void Reset(ID3D12PipelineState* pipe);
 

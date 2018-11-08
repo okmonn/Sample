@@ -2,22 +2,22 @@
 #include <vector>
 #include <memory>
 
+struct ID3D12GraphicsCommandList;
 struct ID3D12DescriptorHeap;
 struct ID3D12Resource;
 class Device;
-class List;
 class Swap;
 
 class Render
 {
 public:
 	// コンストラクタ
-	Render(std::weak_ptr<Device>dev, std::weak_ptr<List>list, std::weak_ptr<Swap>swap);
+	Render(std::weak_ptr<Device>dev, std::weak_ptr<Swap>swap);
 	// デストラクタ
 	~Render();
 
 	// レンダーターゲットのセット
-	void SetRender(ID3D12DescriptorHeap* depth, float* color);
+	void SetRender(ID3D12GraphicsCommandList* list, ID3D12DescriptorHeap* depth, const float& color);
 
 	// ヒープの取得
 	ID3D12DescriptorHeap* GetHeap(void) const {
@@ -41,9 +41,6 @@ private:
 
 	// デバイス
 	std::weak_ptr<Device>dev;
-
-	// コマンドリスト
-	std::weak_ptr<List>list;
 
 	// スワップチェイン
 	std::weak_ptr<Swap>swap;

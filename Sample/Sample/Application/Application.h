@@ -1,7 +1,10 @@
 #pragma once
+#include "../Input/KeyData.h"
 #include <memory>
 
 class Window;
+class Input;
+class Union;
 
 class Application
 {
@@ -13,6 +16,9 @@ public:
 
 	// メッセージの確認
 	bool CheckMsg(void);
+
+	// キーの入力
+	bool CheckKey(const int& i);
 
 	// ウィンドウのコールバック
 	static long __stdcall WindowProc(void* hWnd, unsigned int message, long wParam, long lParam);
@@ -32,7 +38,13 @@ public:
 
 private:
 	// ウィンドウ
-	std::shared_ptr<Window>win;
+	std::unique_ptr<Window>win;
+
+	// インプット
+	std::unique_ptr<Input>input;
+
+	// ユニオン
+	static std::unique_ptr<Union>un;
 
 	// ウィンドウハンドル
 	static void* winHandle;

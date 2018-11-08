@@ -6,8 +6,8 @@
 #include <dxgi1_6.h>
 
 // コンストラクタ
-Render::Render(std::weak_ptr<Device>dev, std::weak_ptr<List>list, std::weak_ptr<Swap>swap) :
-	dev(dev), list(list), swap(swap), heap(nullptr)
+Render::Render(std::weak_ptr<Device>dev, std::weak_ptr<Swap>swap) :
+	dev(dev), swap(swap), heap(nullptr)
 {
 	Init();
 }
@@ -37,7 +37,7 @@ long Render::CreateHeap(void)
 	auto hr = dev.lock()->GetDev()->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&heap));
 	if (FAILED(hr))
 	{
-		OutputDebugString(_T("\nヒープの生成：失敗\n"));
+		OutputDebugString(_T("\nレンダー用ヒープの生成：失敗\n"));
 	}
 
 	return hr;
@@ -63,7 +63,7 @@ long Render::CreateRscView(void)
 		auto hr = swap.lock()->Get()->GetBuffer(i, IID_PPV_ARGS(&rsc[i]));
 		if (FAILED(hr))
 		{
-			OutputDebugString(_T("\nリソースの生成：失敗\n"));
+			OutputDebugString(_T("\nレンダー用リソースの生成：失敗\n"));
 			break;
 		}
 
@@ -85,15 +85,15 @@ void Render::Init(void)
 }
 
 // レンダーターゲットのセット
-void Render::SetRender(ID3D12DescriptorHeap * depth, float * color)
+void Render::SetRender(ID3D12GraphicsCommandList * list, ID3D12DescriptorHeap * depth, const float & color)
 {
 	//ヒープの先頭ハンドルの取得
 	D3D12_CPU_DESCRIPTOR_HANDLE handle = heap->GetCPUDescriptorHandleForHeapStart();
 	handle.ptr += dev.lock()->GetDev()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * swap.lock()->Get()->GetCurrentBackBufferIndex();
 
 	//レンダーターゲットのセット
-	list.lock()->GetList()->OMSetRenderTargets(1, &handle, false, nullptr);
+	list->OMSetRenderTargets(1, &handle, false, &depth->GetCPUDescriptorHandleForHeapStart());
 
 	//レンダーターゲットのクリア
-	list.lock()->GetList()->ClearRenderTargetView(handle, color, 0, nullptr);
+	list->ClearRenderTargetView(handle, &color, 0, nullptr);
 }

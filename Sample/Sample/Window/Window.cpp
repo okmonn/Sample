@@ -17,9 +17,9 @@ Window::~Window()
 }
 
 // タイトル名の変更
-void Window::ChangeTitle(void ** handle, const wchar_t * title)
+void Window::ChangeTitle(void ** handle, const std::tstring & title)
 {
-	auto hr = SetWindowText(reinterpret_cast<HWND>(*handle), title);
+	auto hr = SetWindowText(reinterpret_cast<HWND>(*handle), title.c_str());
 	if (hr == 0)
 	{
 		OutputDebugString(_T("\nタイトル名の変更：失敗\n"));

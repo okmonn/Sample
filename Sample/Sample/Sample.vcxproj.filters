@@ -16,32 +16,62 @@
     <Filter Include="Application">
       <UniqueIdentifier>{b0bdc03e-d378-43c8-a6df-120634ec9659}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Union">
-      <UniqueIdentifier>{df33e6f0-75c8-4c1b-8b75-a3fea12ed143}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Window">
       <UniqueIdentifier>{c0ae16af-7575-45c5-abf6-e8fdc4c83ce9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Device">
-      <UniqueIdentifier>{0341d0ad-9dde-40bd-a9b6-d41bf1d4fe3e}</UniqueIdentifier>
     </Filter>
     <Filter Include="etc">
       <UniqueIdentifier>{9e3c41d4-3b41-4aa6-8a7a-bec1f7e5ef9c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Queue">
-      <UniqueIdentifier>{15864622-c00d-4a53-b424-f0dec9643a55}</UniqueIdentifier>
+    <Filter Include="Application\Device">
+      <UniqueIdentifier>{0341d0ad-9dde-40bd-a9b6-d41bf1d4fe3e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="List">
+    <Filter Include="Application\Fence">
+      <UniqueIdentifier>{1efa4d2a-b068-42b6-8f10-af9bc27f3f42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Command">
+      <UniqueIdentifier>{92ade281-d057-401e-bdc1-01847e204fb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Command\List">
       <UniqueIdentifier>{5b2391c5-3d60-4096-882f-0f3b976b2fdd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Swap">
+    <Filter Include="Application\Command\Queue">
+      <UniqueIdentifier>{15864622-c00d-4a53-b424-f0dec9643a55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Swap">
       <UniqueIdentifier>{c1e3c609-6f84-42d7-b876-087de6cbe85d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RenderTarget">
+    <Filter Include="Application\Union">
+      <UniqueIdentifier>{df33e6f0-75c8-4c1b-8b75-a3fea12ed143}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\DepthStencil">
+      <UniqueIdentifier>{5f1d05ec-198c-49b1-a0b2-6d03c60d6c6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\RenderTarget">
       <UniqueIdentifier>{2f8b1cdb-e8ca-45bc-87f2-9fb4cfe90d65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fence">
-      <UniqueIdentifier>{1efa4d2a-b068-42b6-8f10-af9bc27f3f42}</UniqueIdentifier>
+    <Filter Include="Application\RootSignature">
+      <UniqueIdentifier>{0c15aa4c-26d0-4d9f-82dd-ad445c0e370c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Pipeline">
+      <UniqueIdentifier>{87af1db8-af0f-436a-aa34-124c954852d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{4ff7927a-8737-4ffa-bd55-837daa865fcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Texture">
+      <UniqueIdentifier>{84c450ec-3d3a-48a9-9a7c-bf591d964c46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\DescriptorMane">
+      <UniqueIdentifier>{d38dc4da-6e53-411e-8687-a80869d0bef5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{ebef363e-865a-4580-b312-b2f547f14cd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\Server">
+      <UniqueIdentifier>{3a272a6d-ee20-4e72-b032-a8e78e776521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\Client">
+      <UniqueIdentifier>{ed1f755f-fb8f-4586-8e21-8ed8771c5ddc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -55,22 +85,67 @@
       <Filter>Window</Filter>
     </ClCompile>
     <ClCompile Include="Application\Device\Device.cpp">
-      <Filter>Device</Filter>
+      <Filter>Application\Device</Filter>
     </ClCompile>
     <ClCompile Include="Application\Queue\Queue.cpp">
-      <Filter>Queue</Filter>
+      <Filter>Application\Command\Queue</Filter>
     </ClCompile>
     <ClCompile Include="Application\List\List.cpp">
-      <Filter>List</Filter>
+      <Filter>Application\Command\List</Filter>
     </ClCompile>
     <ClCompile Include="Application\Swap\Swap.cpp">
-      <Filter>Swap</Filter>
+      <Filter>Application\Swap</Filter>
     </ClCompile>
     <ClCompile Include="Application\Render\Render.cpp">
-      <Filter>RenderTarget</Filter>
+      <Filter>Application\RenderTarget</Filter>
     </ClCompile>
     <ClCompile Include="Application\Fence\Fence.cpp">
-      <Filter>Fence</Filter>
+      <Filter>Application\Fence</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Union\Union.cpp">
+      <Filter>Application\Union</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Command\Command.cpp">
+      <Filter>Application\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Depth\Depth.cpp">
+      <Filter>Application\DepthStencil</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Root\Root.cpp">
+      <Filter>Application\RootSignature</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Root\RootMane.cpp">
+      <Filter>Application\RootSignature</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Pipe\Pipe.cpp">
+      <Filter>Application\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Pipe\PipeMane.cpp">
+      <Filter>Application\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\Input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Texture\WICTextureLoader12.cpp">
+      <Filter>Application\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\DescriptorMane\DescriptorMane.cpp">
+      <Filter>Application\DescriptorMane</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Texture\Texture.cpp">
+      <Filter>Application\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Sock.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Server.cpp">
+      <Filter>Network\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Client.cpp">
+      <Filter>Network\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Texture\TextureLoader.cpp">
+      <Filter>Application\Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -84,25 +159,84 @@
       <Filter>Application</Filter>
     </ClInclude>
     <ClInclude Include="Application\Device\Device.h">
-      <Filter>Device</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector2\Vector2.h">
-      <Filter>etc</Filter>
+      <Filter>Application\Device</Filter>
     </ClInclude>
     <ClInclude Include="Application\Queue\Queue.h">
-      <Filter>Queue</Filter>
+      <Filter>Application\Command\Queue</Filter>
     </ClInclude>
     <ClInclude Include="Application\List\List.h">
-      <Filter>List</Filter>
+      <Filter>Application\Command\List</Filter>
     </ClInclude>
     <ClInclude Include="Application\Swap\Swap.h">
-      <Filter>Swap</Filter>
+      <Filter>Application\Swap</Filter>
     </ClInclude>
     <ClInclude Include="Application\Render\Render.h">
-      <Filter>RenderTarget</Filter>
+      <Filter>Application\RenderTarget</Filter>
     </ClInclude>
     <ClInclude Include="Application\Fence\Fence.h">
-      <Filter>Fence</Filter>
+      <Filter>Application\Fence</Filter>
     </ClInclude>
+    <ClInclude Include="Application\Union\Union.h">
+      <Filter>Application\Union</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Command\Command.h">
+      <Filter>Application\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Depth\Depth.h">
+      <Filter>Application\DepthStencil</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Root\Root.h">
+      <Filter>Application\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="etc\Vector2.h">
+      <Filter>etc</Filter>
+    </ClInclude>
+    <ClInclude Include="etc\tString.h">
+      <Filter>etc</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Root\RootMane.h">
+      <Filter>Application\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Pipe\Pipe.h">
+      <Filter>Application\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Pipe\PipeMane.h">
+      <Filter>Application\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\KeyData.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Texture\Texture.h">
+      <Filter>Application\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Texture\WICTextureLoader12.h">
+      <Filter>Application\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\DescriptorMane\DescriptorMane.h">
+      <Filter>Application\DescriptorMane</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\Information.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\Sock.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\Server.h">
+      <Filter>Network\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Network\Client.h">
+      <Filter>Network\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Texture\TextureLoader.h">
+      <Filter>Application\Texture</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\Texture.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

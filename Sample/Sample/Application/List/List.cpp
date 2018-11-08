@@ -36,8 +36,11 @@ long List::CreateList(const D3D12_COMMAND_LIST_TYPE & type)
 	if (FAILED(hr))
 	{
 		OutputDebugString(_T("\nコマンドリストの生成：失敗\n"));
+		return hr;
 	}
-	list->Close();
+
+	Close();
+
 	return hr;
 }
 
@@ -46,6 +49,12 @@ void List::Init(const D3D12_COMMAND_LIST_TYPE & type)
 {
 	CreateAllo(type);
 	CreateList(type);
+}
+
+// コマンドリストを閉じる
+void List::Close(void)
+{
+	list->Close();
 }
 
 // リセット
