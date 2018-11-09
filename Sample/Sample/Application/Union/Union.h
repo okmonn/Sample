@@ -34,7 +34,8 @@ private:
 	void CreateRoot(void);
 
 	// パイプラインの生成
-	void CreatePipe(const std::string& name, const std::string& rootName, const D3D12_PRIMITIVE_TOPOLOGY_TYPE& type, const std::initializer_list<int>&index);
+	void CreatePipe(const std::string& name, const std::string& rootName, const D3D12_PRIMITIVE_TOPOLOGY_TYPE& type, 
+		const std::initializer_list<int>&index, const bool& depth = false);
 	void CreatePipe(void);
 
 

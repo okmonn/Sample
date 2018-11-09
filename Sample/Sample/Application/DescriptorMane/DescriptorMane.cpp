@@ -70,7 +70,7 @@ void DescriptorMane::DeleteHeap(int & i)
 	if (heap.find(&i) != heap.end())
 	{
 		Release(heap[&i]);
-		rsc.erase(rsc.find(&i));
+		heap.erase(heap.find(&i));
 	}
 }
 

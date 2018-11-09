@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <vector>
 #include <string>
 #include <memory>
 #include <DirectXMath.h>
@@ -22,6 +23,20 @@ namespace tex {
 		//uv
 		DirectX::XMFLOAT2 uv;
 	};
+
+	struct Info
+	{
+		//移動行列
+		DirectX::XMFLOAT4X4 matrix;
+		//ウィンドウサイズ
+		DirectX::XMFLOAT2 window;
+		//uv座標
+		DirectX::XMFLOAT2 uvPos;
+		//uvサイズ
+		DirectX::XMFLOAT2 uvSize;
+		//アルファ値
+		float alpha;
+	};
 }
 
 class Texture
@@ -34,6 +49,10 @@ class Texture
 		unsigned char* decode;
 		//サブデータ
 		std::weak_ptr<D3D12_SUBRESOURCE_DATA>sub;
+		//定数リソースID
+		int cRsc;
+		//定数送信データ
+		tex::Info* info;
 		//頂点リソースID
 		int vRsc;
 		//頂点送信データ
@@ -52,23 +71,35 @@ public:
 	void Load(const std::string& fileName, int& i);
 
 	// 描画
-	void Draw(ID3D12GraphicsCommandList* list, int& i);
+	void Draw(ID3D12GraphicsCommandList* list, int& i, const DirectX::XMFLOAT2& pos, const DirectX::XMFLOAT2& size, const DirectX::XMFLOAT2& uvPos, const DirectX::XMFLOAT2& uvSize);
 
 	// 削除
 	void Delete(int& i);
 
 private:
+	// 頂点のセット
+	void SetVertex(void);
+
+	// 定数リソースの生成
+	long CreateConRsc(int* i);
+
+	// 定数バッファビューの生成
+	void CreateConView(int* i);
+
 	// シェーダーリソースビューの生成
 	void CreateShaderView(int* i);
 
 	// サブリソースに書き込み
 	long WriteSub(int* i);
 
+	// 定数バッファのマップ
+	long MapCon(int* i);
+
 	// 頂点リソースの生成
 	long CreateVertexRsc(int* i);
 
 	// 頂点マップ
-	long Map(int* i);
+	long MapVertex(int* i);
 
 	// バンドルのセット
 	void SetBundle(int* i);
@@ -88,6 +119,9 @@ private:
 
 	// パイプライン
 	std::weak_ptr<Pipe>pipe;
+
+	// 頂点
+	std::vector<tex::Vertex>vertex;
 
 	// 画像データ
 	std::map<int*, Tex>tex;

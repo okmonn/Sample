@@ -33,6 +33,12 @@ public:
 	// “Ç‚İ‚İ
 	long Load(std::weak_ptr<Device>dev, const std::string& fileName);
 
+	// ‰æ‘œ‚Ì‰¡•‚Ìæ“¾
+	unsigned int GetWidth(const std::string& fileName);
+
+	// ‰æ‘œ‚Ì‰¡•‚Ìæ“¾
+	unsigned int GetHeight(const std::string& fileName);
+
 	// ƒf[ƒ^‚Ìíœ
 	void Delete(const std::string& fileName);
 

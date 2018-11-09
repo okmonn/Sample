@@ -18,7 +18,7 @@ public:
 	~PipeMane();
 
 	// パイプラインの生成
-	void CreatePipe(int& i, std::weak_ptr<Root>root, const D3D12_PRIMITIVE_TOPOLOGY_TYPE& type, const std::initializer_list<int>&index);
+	void CreatePipe(int& i, std::weak_ptr<Root>root, const D3D12_PRIMITIVE_TOPOLOGY_TYPE& type, const std::initializer_list<int>&index, const bool& depth);
 
 	// パイプラインクラスの取得
 	std::shared_ptr<Pipe>Get(int& i) {

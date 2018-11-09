@@ -40,6 +40,18 @@ long TextureLoad::Load(std::weak_ptr<Device>dev, const std::string & fileName)
 	return hr;
 }
 
+// ‰æ‘œ‚Ì‰¡•‚Ìæ“¾
+unsigned int TextureLoad::GetWidth(const std::string & fileName)
+{
+	return origin[fileName].rsc->GetDesc().Width;
+}
+
+// ‰æ‘œ‚Ì‰¡•‚Ìæ“¾
+unsigned int TextureLoad::GetHeight(const std::string & fileName)
+{
+	return origin[fileName].rsc->GetDesc().Height;
+}
+
 // ƒf[ƒ^‚Ìíœ
 void TextureLoad::Delete(const std::string & fileName)
 {

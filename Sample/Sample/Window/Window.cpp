@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "../Application/Application.h"
+#include "../Icon/Icon.h"
 #include <Windows.h>
 #include <tchar.h>
 
@@ -54,8 +55,8 @@ void Window::Create(void ** handle)
 	wnd.cbWndExtra    = 0;
 	wnd.hbrBackground = CreateSolidBrush(0x000000);
 	wnd.hCursor       = LoadCursor(nullptr, IDC_ARROW);
-	wnd.hIcon         = LoadIcon(nullptr, IDI_APPLICATION);
-	wnd.hIconSm       = LoadIcon(GetModuleHandle(0), IDI_APPLICATION);
+	wnd.hIcon         = LoadIcon(nullptr, MAKEINTRESOURCE(ICON_ID));
+	wnd.hIconSm       = LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(ICON_ID));
 	wnd.hInstance     = GetModuleHandle(0);
 	wnd.lpfnWndProc   = (WNDPROC)WindowProc;
 	wnd.lpszClassName = _T("DirectX12");

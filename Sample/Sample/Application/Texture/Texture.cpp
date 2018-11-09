@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "../Application.h"
 #include "../DescriptorMane/DescriptorMane.h"
 #include "TextureLoader.h"
 #include "../Device/Device.h"
@@ -7,25 +8,79 @@
 #include "../Pipe/Pipe.h"
 #include "../Release.h"
 
-namespace {
-	tex::Vertex vertex[] = {
-		{{-1.0f,  1.0f, 0.0f}, {0.0f, 0.0f}},
-		{{ 1.0f,  1.0f, 0.0f}, {1.0f, 0.0f}}, 
-		{{-1.0f, -1.0f, 0.0f}, {0.0f, 1.0f}}, 
-		{{ 1.0f, -1.0f, 0.0f}, {1.0f, 1.0f}}
-	};
-}
-
 // コンストラクタ
 Texture::Texture(std::weak_ptr<Device>dev, std::weak_ptr<Root>root, std::weak_ptr<Pipe>pipe) :
 	descMane(DescriptorMane::Get()), loader(TextureLoad::Get()), dev(dev), root(root), pipe(pipe)
 {
+	vertex.resize(4);
+
 	tex.clear();
+
+	SetVertex();
 }
 
 // デストラクタ
 Texture::~Texture()
 {
+}
+
+void Texture::SetVertex(void)
+{
+	vertex[0] = { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };
+	vertex[1] = { { (float)Application::GetWidth(), 0.0f, 0.0f }, { 1.0f, 0.0f } };
+	vertex[2] = { { 0.0f, (float)Application::GetHeight(), 0.0f }, { 0.0f, 1.0f } };
+	vertex[3] = { {(float)Application::GetWidth(), (float)Application::GetHeight(), 0.0f}, { 1.0f, 1.0f } };
+}
+
+// 定数リソースの生成
+long Texture::CreateConRsc(int * i)
+{
+	D3D12_HEAP_PROPERTIES prop{};
+	prop.CPUPageProperty      = D3D12_CPU_PAGE_PROPERTY::D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+	prop.CreationNodeMask     = 1;
+	prop.MemoryPoolPreference = D3D12_MEMORY_POOL::D3D12_MEMORY_POOL_UNKNOWN;
+	prop.Type                 = D3D12_HEAP_TYPE::D3D12_HEAP_TYPE_UPLOAD;
+	prop.VisibleNodeMask      = 1;
+
+	D3D12_RESOURCE_DESC desc{};
+	desc.Alignment        = 0;
+	desc.DepthOrArraySize = 1;
+	desc.Dimension        = D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_BUFFER;
+	desc.Flags            = D3D12_RESOURCE_FLAGS::D3D12_RESOURCE_FLAG_NONE;
+	desc.Format           = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
+	desc.Height           = 1;
+	desc.Layout           = D3D12_TEXTURE_LAYOUT::D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	desc.MipLevels        = 1;
+	desc.SampleDesc       = { 1, 0 };
+	desc.Width            = (sizeof(tex::Info) + 0xff) &~0xff;
+
+	return  descMane.CreateRsc(dev, tex[i].cRsc, prop, desc);
+}
+
+// 定数バッファビューの生成
+void Texture::CreateConView(int * i)
+{
+	D3D12_CONSTANT_BUFFER_VIEW_DESC desc{};
+	desc.BufferLocation = descMane.GetRsc(tex[i].cRsc)->GetGPUVirtualAddress();
+	desc.SizeInBytes = (sizeof(tex::Info) + 0xff) &~0xff;
+
+	auto handle = descMane.GetHeap(*i)->GetCPUDescriptorHandleForHeapStart();
+	dev.lock()->GetDev()->CreateConstantBufferView(&desc, handle);
+}
+
+// 定数バッファのマップ
+long Texture::MapCon(int * i)
+{
+	auto hr = descMane.GetRsc(tex[i].cRsc)->Map(0, nullptr, (void**)(&tex[i].info));
+	if (FAILED(hr))
+	{
+		OutputDebugString(_T("\nテクスチャの定数バッファのマップ：失敗\n"));
+		return hr;
+	}
+
+	tex[i].info->window = { static_cast<float>(Application::GetWidth()), static_cast<float>(Application::GetHeight()) };
+
+	return hr;
 }
 
 // シェーダーリソースビューの生成
@@ -38,7 +93,9 @@ void Texture::CreateShaderView(int * i)
 	desc.Texture2D.MostDetailedMip = 0;
 	desc.Shader4ComponentMapping   = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
-	dev.lock()->GetDev()->CreateShaderResourceView(tex[i].rsc, &desc, descMane.GetHeap(*i)->GetCPUDescriptorHandleForHeapStart());
+	auto handle = descMane.GetHeap(*i)->GetCPUDescriptorHandleForHeapStart();
+	handle.ptr += dev.lock()->GetDev()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	dev.lock()->GetDev()->CreateShaderResourceView(tex[i].rsc, &desc, handle);
 }
 
 // サブリソースに書き込み
@@ -72,23 +129,22 @@ long Texture::CreateVertexRsc(int * i)
 	prop.VisibleNodeMask      = 1;
 
 	D3D12_RESOURCE_DESC desc{};
-	desc.Alignment          = 0;
-	desc.DepthOrArraySize   = 1;
-	desc.Dimension          = D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_BUFFER;
-	desc.Flags              = D3D12_RESOURCE_FLAGS::D3D12_RESOURCE_FLAG_NONE;
-	desc.Format             = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
-	desc.Height             = 1;
-	desc.Layout             = D3D12_TEXTURE_LAYOUT::D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-	desc.MipLevels          = 1;
-	desc.SampleDesc.Count   = 1;
-	desc.SampleDesc.Quality = 0;
-	desc.Width              = sizeof(vertex);
+	desc.Alignment        = 0;
+	desc.DepthOrArraySize = 1;
+	desc.Dimension        = D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_BUFFER;
+	desc.Flags            = D3D12_RESOURCE_FLAGS::D3D12_RESOURCE_FLAG_NONE;
+	desc.Format           = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
+	desc.Height           = 1;
+	desc.Layout           = D3D12_TEXTURE_LAYOUT::D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	desc.MipLevels        = 1;
+	desc.SampleDesc       = { 1,0 };
+	desc.Width            = sizeof(tex::Vertex) * vertex.size();
 
 	return descMane.CreateRsc(dev, tex[i].vRsc, prop, desc);
 }
 
 // 頂点マップ
-long Texture::Map(int * i)
+long Texture::MapVertex(int * i)
 {
 	auto hr = descMane.GetRsc(tex[i].vRsc)->Map(0, nullptr, reinterpret_cast<void**>(&tex[i].data));
 	if (FAILED(hr))
@@ -97,7 +153,7 @@ long Texture::Map(int * i)
 		return hr;
 	}
 	//頂点データのコピー
-	memcpy(tex[i].data, &vertex[0], sizeof(vertex));
+	memcpy(tex[i].data, &vertex[0], sizeof(tex::Vertex) * vertex.size());
 
 	descMane.GetRsc(tex[i].vRsc)->Unmap(0, nullptr);
 
@@ -112,17 +168,23 @@ void Texture::SetBundle(int * i)
 	tex[i].list->SetRoot(root.lock()->Get());
 	tex[i].list->SetPipe(pipe.lock()->Get());
 
+	auto heap = descMane.GetHeap(*i);
+	tex[i].list->GetList()->SetDescriptorHeaps(1, &heap);
+
+	auto handle = descMane.GetHeap(*i)->GetGPUDescriptorHandleForHeapStart();
+	tex[i].list->GetList()->SetGraphicsRootDescriptorTable(0, handle);
+	handle.ptr += dev.lock()->GetDev()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
 	D3D12_VERTEX_BUFFER_VIEW view{};
 	view.BufferLocation = descMane.GetRsc(tex[i].vRsc)->GetGPUVirtualAddress();
-	view.SizeInBytes    = sizeof(vertex);
+	view.SizeInBytes    = sizeof(tex::Vertex) * vertex.size();
 	view.StrideInBytes  = sizeof(tex::Vertex);
 	tex[i].list->GetList()->IASetVertexBuffers(0, 1, &view);
 
 	tex[i].list->GetList()->IASetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	auto heap = descMane.GetHeap(*i);
-	tex[i].list->GetList()->SetDescriptorHeaps(1, &heap);
-	tex[i].list->GetList()->SetGraphicsRootDescriptorTable(0, descMane.GetHeap(*i)->GetGPUDescriptorHandleForHeapStart());
-	tex[i].list->GetList()->DrawInstanced(_countof(vertex), 1, 0, 0);
+	
+	tex[i].list->GetList()->SetGraphicsRootDescriptorTable(1, handle);
+	tex[i].list->GetList()->DrawInstanced(vertex.size(), 1, 0, 0);
 
 	tex[i].list->Close();
 }
@@ -140,17 +202,32 @@ void Texture::Load(const std::string & fileName, int & i)
 	tex[&i].sub    = loader.GetSub(fileName);
 	tex[&i].list   = std::make_unique<List>(dev, D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_BUNDLE);
 
-	descMane.CreateHeap(dev, i, D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE);
+	descMane.CreateHeap(dev, i, D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, 2);
+	CreateConRsc(&i);
+	CreateConView(&i);
+	MapCon(&i);
 	CreateShaderView(&i);
 	WriteSub(&i);
 	CreateVertexRsc(&i);
-	Map(&i);
+	MapVertex(&i);
 	SetBundle(&i);
 }
 
 // 描画
-void Texture::Draw(ID3D12GraphicsCommandList * list, int & i)
+void Texture::Draw(ID3D12GraphicsCommandList * list, int & i, const DirectX::XMFLOAT2 & pos, const DirectX::XMFLOAT2 & size, 
+	const DirectX::XMFLOAT2 & uvPos, const DirectX::XMFLOAT2 & uvSize)
 {
+	 XMStoreFloat4x4(&tex[&i].info->matrix, 
+		 DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat2(
+			 &DirectX::XMFLOAT2(size.x / static_cast<float>(Application::GetWidth()), size.y / static_cast<float>(Application::GetHeight()))))
+	   * DirectX::XMMatrixTranslationFromVector(
+			 DirectX::XMLoadFloat2(&DirectX::XMFLOAT2(pos.x, pos.y)))
+	      
+	 );
+	 tex[&i].info->uvPos  = uvPos;
+	 tex[&i].info->uvSize = uvSize;
+	 tex[&i].info->alpha  = 0.5f;
+
 	auto heap = descMane.GetHeap(i);
 	list->SetDescriptorHeaps(1, &heap);
 	list->ExecuteBundle(tex[&i].list->GetList());
@@ -161,6 +238,10 @@ void Texture::Delete(int & i)
 {
 	if (tex.find(&i) != tex.end())
 	{
+		UnMap(descMane.GetRsc(tex[&i].cRsc));
+		descMane.DeleteRsc(tex[&i].cRsc);
+		descMane.DeleteRsc(tex[&i].vRsc);
+		descMane.DeleteHeap(i);
 		tex.erase(tex.find(&i));
 	}
 }

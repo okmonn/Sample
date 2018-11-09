@@ -39,7 +39,7 @@ PipeMane::~PipeMane()
 }
 
 // パイプラインの生成
-void PipeMane::CreatePipe(int & i, std::weak_ptr<Root> root, const D3D12_PRIMITIVE_TOPOLOGY_TYPE & type, const std::initializer_list<int> & index)
+void PipeMane::CreatePipe(int & i, std::weak_ptr<Root> root, const D3D12_PRIMITIVE_TOPOLOGY_TYPE & type, const std::initializer_list<int> & index, const bool & depth)
 {
 	std::vector< D3D12_INPUT_ELEMENT_DESC>input;
 	for (auto& idx : index)
@@ -48,5 +48,5 @@ void PipeMane::CreatePipe(int & i, std::weak_ptr<Root> root, const D3D12_PRIMITI
 	}
 
 	pipe[&i] = std::make_shared<Pipe>(dev, swap, root);
-	pipe[&i]->Create(*input.data(), input.size(), type);
+	pipe[&i]->Create(*input.data(), input.size(), type, depth);
 }

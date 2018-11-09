@@ -18,7 +18,7 @@ Pipe::~Pipe()
 }
 
 // パイプラインの生成
-long Pipe::Create(const D3D12_INPUT_ELEMENT_DESC & input, const unsigned int & num, const D3D12_PRIMITIVE_TOPOLOGY_TYPE & type)
+long Pipe::Create(const D3D12_INPUT_ELEMENT_DESC & input, const unsigned int & num, const D3D12_PRIMITIVE_TOPOLOGY_TYPE & type, const bool & depth)
 {
 	D3D12_RASTERIZER_DESC rasterizer{};
 	rasterizer.AntialiasedLineEnable = FALSE;
@@ -57,7 +57,7 @@ long Pipe::Create(const D3D12_INPUT_ELEMENT_DESC & input, const unsigned int & n
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
 	desc.BlendState                       = blend;
-	desc.DepthStencilState.DepthEnable    = true;
+	desc.DepthStencilState.DepthEnable    = depth;
 	desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK::D3D12_DEPTH_WRITE_MASK_ALL;
 	desc.DepthStencilState.DepthFunc      = D3D12_COMPARISON_FUNC::D3D12_COMPARISON_FUNC_LESS;
 	desc.DepthStencilState.StencilEnable  = FALSE;

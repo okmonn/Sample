@@ -21,7 +21,7 @@ const float color[] = {
 	1.0f
 };
 int n = 0;
-
+int m = 0;
 // コンストラクタ
 Union::Union()
 {
@@ -42,6 +42,7 @@ Union::Union()
 
 	tex = std::make_unique<Texture>(dev, root->Get(rootNo["sample"]), pipe->Get(pipeNo["sample"]));
 	tex->Load("avicii.png", n);
+	tex->Load("sample.bmp", m);
 }
 
 // デストラクタ
@@ -63,7 +64,8 @@ void Union::Set(void)
 
 	ren->SetRender(com->GetList()->GetList(), dep->GetHeap(), *color);
 
-	tex->Draw(com->GetList()->GetList(), n);
+	tex->Draw(com->GetList()->GetList(), m, { 0.0f, 0.0f }, {100.0f, 100.0f}, { 0.0f, 0.0f }, { 256.0f, 256.0f });
+	tex->Draw(com->GetList()->GetList(), n, { 0.0f, 0.0f }, {640.0f, 480.0f},  { 0.0f, 0.0f }, { 200.0f, 200.0f });
 }
 
 // 描画実行
@@ -101,7 +103,8 @@ void Union::CreateRoot(void)
 }
 
 // パイプラインの生成
-void Union::CreatePipe(const std::string & name, const std::string & rootName, const D3D12_PRIMITIVE_TOPOLOGY_TYPE & type, const std::initializer_list<int> & index)
+void Union::CreatePipe(const std::string & name, const std::string & rootName, const D3D12_PRIMITIVE_TOPOLOGY_TYPE & type, 
+	const std::initializer_list<int> & index, const bool & depth)
 {
 	if (pipeNo.find(name) != pipeNo.end())
 	{
@@ -109,12 +112,12 @@ void Union::CreatePipe(const std::string & name, const std::string & rootName, c
 	}
 
 	pipeNo[name] = 0;
-	pipe->CreatePipe(pipeNo[name], root->Get(rootNo[rootName]), type, index);
+	pipe->CreatePipe(pipeNo[name], root->Get(rootNo[rootName]), type, index, depth);
 }
 
 // パイプラインの生成
 void Union::CreatePipe(void)
 {
-	CreatePipe("sample", "sample", D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, { 0, 2 });
+	CreatePipe("sample", "sample", D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, { 0, 2 }, false);
 }
 

@@ -76,6 +76,9 @@
     <Filter Include="Application\Camera">
       <UniqueIdentifier>{2a1b9b9c-427b-40a2-866b-dfb4a05bb222}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Icon">
+      <UniqueIdentifier>{6c3a3b8f-42ca-40b4-a17b-e13a57534516}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -248,10 +251,18 @@
     <ClInclude Include="Application\Camera\Camera.h">
       <Filter>Application\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Icon\Icon.h">
+      <Filter>Icon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\Texture.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Icon\Icon.rc">
+      <Filter>Icon</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
