@@ -7,7 +7,7 @@ int main()
 
 	while (a.CheckMsg() && a.CheckKey(INPUT_ESCAPE) == false)
 	{
-
+		a.Render();
 	}
 
 	return 0;

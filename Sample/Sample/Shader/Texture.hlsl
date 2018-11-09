@@ -15,13 +15,14 @@
                                   "maxLOD         = 3.402823466e+38f, "\
                                   "space          = 0, "\
                                   "visibility     = SHADER_VISIBILITY_ALL)"
-
+Texture2D<float4> tex : register(t0);
 SamplerState smp      : register(s0);
 
 // 入力
 struct Input
 {
     float4 pos  : POSITION;
+    float2 uv   : TEXCOORD;
 };
 
 // 出力
@@ -29,6 +30,7 @@ struct Out
 {
     float4 svpos : SV_POSITION;
     float4 pos   : POSITION;
+    float2 uv    : TEXCOORD;
 };
 
 // 頂点シェーダ
@@ -38,6 +40,7 @@ Out VS(Input input)
     Out o;
     o.svpos = input.pos;
     o.pos   = input.pos;
+    o.uv    = input.uv;
 
     return o;
 }
@@ -45,5 +48,5 @@ Out VS(Input input)
 // ピクセルシェーダ
 float4 PS(Out o) : SV_TARGET
 {
-    return float4(1, 1, 1, 1);
+    return tex.Sample(smp, o.uv).rgba;
 }

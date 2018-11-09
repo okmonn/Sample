@@ -12,7 +12,7 @@ class Depth;
 class Fence;
 class RootMane;
 class PipeMane;
-class DescriptorMane;
+class Texture;
 
 class Union
 {
@@ -62,8 +62,8 @@ private:
 	// パイプマネジャー
 	std::unique_ptr<PipeMane>pipe;
 
-	// ヒープ・リソースマネージャー
-	std::unique_ptr<DescriptorMane>descriptorMane;
+	// テクスチャ
+	std::unique_ptr<Texture>tex;
 
 	// ルートシグネチャID
 	std::map<std::string, int>rootNo;

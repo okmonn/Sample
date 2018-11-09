@@ -20,8 +20,8 @@ public:
 	// キーの入力
 	bool CheckKey(const int& i);
 
-	// ウィンドウのコールバック
-	static long __stdcall WindowProc(void* hWnd, unsigned int message, long wParam, long lParam);
+	// 描画・処理
+	void Render(void);
 
 	// ウィンドウハンドルの取得
 	static void* GetWinHandle(void) {
@@ -44,7 +44,7 @@ private:
 	std::unique_ptr<Input>input;
 
 	// ユニオン
-	static std::unique_ptr<Union>un;
+	std::unique_ptr<Union>un;
 
 	// ウィンドウハンドル
 	static void* winHandle;

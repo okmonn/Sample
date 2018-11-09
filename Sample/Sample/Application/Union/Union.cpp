@@ -9,7 +9,7 @@
 #include "../Fence/Fence.h"
 #include "../Root/RootMane.h"
 #include "../Pipe/PipeMane.h"
-#include "../DescriptorMane/DescriptorMane.h"
+#include "../Texture/Texture.h"
 #include <d3d12.h>
 #include <dxgi1_6.h>
 
@@ -20,6 +20,7 @@ const float color[] = {
 	1.0f,
 	1.0f
 };
+int n = 0;
 
 // コンストラクタ
 Union::Union()
@@ -39,7 +40,8 @@ Union::Union()
 	CreateRoot();
 	CreatePipe();
 
-	descriptorMane = std::make_unique<DescriptorMane>(dev);
+	tex = std::make_unique<Texture>(dev, root->Get(rootNo["sample"]), pipe->Get(pipeNo["sample"]));
+	tex->Load("avicii.png", n);
 }
 
 // デストラクタ
@@ -60,6 +62,8 @@ void Union::Set(void)
 		ren->GetRsc(swap->Get()->GetCurrentBackBufferIndex()));
 
 	ren->SetRender(com->GetList()->GetList(), dep->GetHeap(), *color);
+
+	tex->Draw(com->GetList()->GetList(), n);
 }
 
 // 描画実行
@@ -111,6 +115,6 @@ void Union::CreatePipe(const std::string & name, const std::string & rootName, c
 // パイプラインの生成
 void Union::CreatePipe(void)
 {
-	CreatePipe("sample", "sample", D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, { 0 });
+	CreatePipe("sample", "sample", D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, { 0, 2 });
 }
 

@@ -26,6 +26,25 @@ void Window::ChangeTitle(void ** handle, const std::tstring & title)
 	}
 }
 
+// ウィンドウのコールバック
+long __stdcall Window::WindowProc(void * hWnd, unsigned int message, long wParam, long lParam)
+{
+	switch (message)
+	{
+	case WM_CREATE:
+		return 0;
+
+	case WM_PAINT:
+		return 0;
+
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	}
+
+	return DefWindowProc((HWND)hWnd, message, wParam, lParam);
+}
+
 // ウィンドウの生成
 void Window::Create(void ** handle)
 {
@@ -38,7 +57,7 @@ void Window::Create(void ** handle)
 	wnd.hIcon         = LoadIcon(nullptr, IDI_APPLICATION);
 	wnd.hIconSm       = LoadIcon(GetModuleHandle(0), IDI_APPLICATION);
 	wnd.hInstance     = GetModuleHandle(0);
-	wnd.lpfnWndProc   = (WNDPROC)Application::WindowProc;
+	wnd.lpfnWndProc   = (WNDPROC)WindowProc;
 	wnd.lpszClassName = _T("DirectX12");
 	wnd.lpszMenuName  = _T("DirectX12");
 	wnd.style         = CS_HREDRAW | CS_VREDRAW;

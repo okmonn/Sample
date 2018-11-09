@@ -120,6 +120,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application\Application.cpp" />
+    <ClCompile Include="Application\Camera\Camera.cpp" />
     <ClCompile Include="Application\Command\Command.cpp" />
     <ClCompile Include="Application\Depth\Depth.cpp" />
     <ClCompile Include="Application\DescriptorMane\DescriptorMane.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="Application\Texture\TextureLoader.cpp" />
     <ClCompile Include="Application\Texture\WICTextureLoader12.cpp" />
     <ClCompile Include="Application\Union\Union.cpp" />
+    <ClCompile Include="etc\Func.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Network\Client.cpp" />
@@ -146,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Application.h" />
+    <ClInclude Include="Application\Camera\Camera.h" />
     <ClInclude Include="Application\Command\Command.h" />
     <ClInclude Include="Application\Depth\Depth.h" />
     <ClInclude Include="Application\DescriptorMane\DescriptorMane.h" />
@@ -164,6 +167,7 @@
     <ClInclude Include="Application\Texture\TextureLoader.h" />
     <ClInclude Include="Application\Texture\WICTextureLoader12.h" />
     <ClInclude Include="Application\Union\Union.h" />
+    <ClInclude Include="etc\Func.h" />
     <ClInclude Include="etc\tString.h" />
     <ClInclude Include="etc\Vector2.h" />
     <ClInclude Include="Input\Input.h" />

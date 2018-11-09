@@ -6,8 +6,8 @@ enum D3D12_RESOURCE_STATES : int;
 struct ID3D12CommandAllocator;
 struct ID3D12GraphicsCommandList;
 struct ID3D12Resource;
-struct ID3D12PipelineState;
 struct ID3D12RootSignature;
+struct ID3D12PipelineState;
 class Device;
 
 class List
@@ -23,6 +23,12 @@ public:
 
 	// リセット
 	void Reset(ID3D12PipelineState* pipe);
+
+	// ルートシグネチャのセット
+	void SetRoot(ID3D12RootSignature* root);
+
+	// パイプラインのセット
+	void SetPipe(ID3D12PipelineState* pipe);
 
 	// ビューポートのセット
 	void SetViewport(void);

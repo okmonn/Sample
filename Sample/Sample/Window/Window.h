@@ -13,6 +13,9 @@ public:
 	void ChangeTitle(void** handle, const std::tstring& title);
 
 private:
+	// ウィンドウのコールバック
+	static long __stdcall WindowProc(void* hWnd, unsigned int message, long wParam, long lParam);
+
 	// ウィンドウの生成
 	void Create(void** handle);
 

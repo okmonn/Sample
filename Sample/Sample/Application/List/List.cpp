@@ -64,6 +64,18 @@ void List::Reset(ID3D12PipelineState * pipe)
 	list->Reset(allo, pipe);
 }
 
+// ルートシグネチャのセット
+void List::SetRoot(ID3D12RootSignature * root)
+{
+	list->SetGraphicsRootSignature(root);
+}
+
+// パイプラインのセット
+void List::SetPipe(ID3D12PipelineState * pipe)
+{
+	list->SetPipelineState(pipe);
+}
+
 // ビューポートのセット
 void List::SetViewport(void)
 {
