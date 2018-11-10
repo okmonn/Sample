@@ -79,6 +79,9 @@
     <Filter Include="Icon">
       <UniqueIdentifier>{6c3a3b8f-42ca-40b4-a17b-e13a57534516}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Application\Compute">
+      <UniqueIdentifier>{887f52fc-b7d1-42f5-8fe4-0aa85a209bde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -158,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="Application\Camera\Camera.cpp">
       <Filter>Application\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Compute\Compute.cpp">
+      <Filter>Application\Compute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="Icon\Icon.h">
       <Filter>Icon</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Compute\Compute.h">
+      <Filter>Application\Compute</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

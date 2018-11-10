@@ -43,7 +43,7 @@ long TextureLoad::Load(std::weak_ptr<Device>dev, const std::string & fileName)
 // ‰æ‘œ‚Ì‰¡•‚Ìæ“¾
 unsigned int TextureLoad::GetWidth(const std::string & fileName)
 {
-	return origin[fileName].rsc->GetDesc().Width;
+	return static_cast<unsigned int>(origin[fileName].rsc->GetDesc().Width);
 }
 
 // ‰æ‘œ‚Ì‰¡•‚Ìæ“¾

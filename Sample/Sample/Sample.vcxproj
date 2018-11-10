@@ -122,6 +122,7 @@
     <ClCompile Include="Application\Application.cpp" />
     <ClCompile Include="Application\Camera\Camera.cpp" />
     <ClCompile Include="Application\Command\Command.cpp" />
+    <ClCompile Include="Application\Compute\Compute.cpp" />
     <ClCompile Include="Application\Depth\Depth.cpp" />
     <ClCompile Include="Application\DescriptorMane\DescriptorMane.cpp" />
     <ClCompile Include="Application\Device\Device.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Application\Application.h" />
     <ClInclude Include="Application\Camera\Camera.h" />
     <ClInclude Include="Application\Command\Command.h" />
+    <ClInclude Include="Application\Compute\Compute.h" />
     <ClInclude Include="Application\Depth\Depth.h" />
     <ClInclude Include="Application\DescriptorMane\DescriptorMane.h" />
     <ClInclude Include="Application\Device\Device.h" />

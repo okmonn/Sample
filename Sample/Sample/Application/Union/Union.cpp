@@ -64,8 +64,8 @@ void Union::Set(void)
 
 	ren->SetRender(com->GetList()->GetList(), dep->GetHeap(), *color);
 
-	tex->Draw(com->GetList()->GetList(), m, { 0.0f, 0.0f }, {100.0f, 100.0f}, { 0.0f, 0.0f }, { 256.0f, 256.0f });
-	tex->Draw(com->GetList()->GetList(), n, { 0.0f, 0.0f }, {640.0f, 480.0f},  { 0.0f, 0.0f }, { 200.0f, 200.0f });
+	tex->Draw(com->GetList(), m, { 0.0f, 0.0f }, {100.0f, 100.0f}, { 0.0f, 0.0f }, { 256.0f, 256.0f });
+	tex->Draw(com->GetList(), n, { 0.0f, 0.0f }, {640.0f, 480.0f},  { 0.0f, 0.0f }, { 200.0f, 200.0f });
 }
 
 // •`‰æÀs

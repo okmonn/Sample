@@ -28,6 +28,7 @@ cbuffer Info : register(b0)
     float2 window;
     float2 uvPos;
     float2 uvSize;
+    float2 reverse;
     float alpha;
 }
 
@@ -56,7 +57,7 @@ Out VS(Input input)
 
     input.pos    = mul(mtx, input.pos);
     input.pos.xy = float2(-1.0f, 1.0f) + (input.pos.xy / float2((window.x / 2.0f), -(window.y / 2.0f)));
-    input.uv = (input.uv * uvSize + uvPos) / size;
+    input.uv = (input.uv * reverse * uvSize + uvPos) / size;
 
     Out o;
     o.svpos = input.pos;

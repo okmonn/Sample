@@ -75,6 +75,7 @@ void Window::Create(void ** handle)
 		(rect.right - rect.left), (rect.bottom - rect.top), nullptr, nullptr, wnd.hInstance, nullptr);
 	if (*handle == nullptr)
 	{
+		OutputDebugString(_T("\nウィンドウの生成：失敗\n"));
 		return;
 	}
 

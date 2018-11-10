@@ -8,11 +8,14 @@
 #include "../Pipe/Pipe.h"
 #include "../Release.h"
 
+// 頂点数
+#define VERTEX_MAX 4
+
 // コンストラクタ
 Texture::Texture(std::weak_ptr<Device>dev, std::weak_ptr<Root>root, std::weak_ptr<Pipe>pipe) :
 	descMane(DescriptorMane::Get()), loader(TextureLoad::Get()), dev(dev), root(root), pipe(pipe)
 {
-	vertex.resize(4);
+	vertex.resize(VERTEX_MAX);
 
 	tex.clear();
 
@@ -22,6 +25,10 @@ Texture::Texture(std::weak_ptr<Device>dev, std::weak_ptr<Root>root, std::weak_pt
 // デストラクタ
 Texture::~Texture()
 {
+	for (auto itr = tex.begin(); itr != tex.end(); ++itr)
+	{
+		UnMap(descMane.GetRsc(itr->second.cRsc));
+	}
 }
 
 void Texture::SetVertex(void)
@@ -109,7 +116,7 @@ long Texture::WriteSub(int * i)
 	box.right  = static_cast<UINT>(tex[i].rsc->GetDesc().Width);
 	box.top    = 0;
 
-	auto hr = tex[i].rsc->WriteToSubresource(0, &box, &tex[i].decode[0], tex[i].sub.lock()->RowPitch, tex[i].sub.lock()->SlicePitch);
+	auto hr = tex[i].rsc->WriteToSubresource(0, &box, &tex[i].decode[0], tex[i].sub.lock()->RowPitch, static_cast<UINT>(tex[i].sub.lock()->SlicePitch));
 	if (FAILED(hr))
 	{
 		OutputDebugString(_T("\nサブリソースの更新：失敗"));
@@ -214,8 +221,8 @@ void Texture::Load(const std::string & fileName, int & i)
 }
 
 // 描画
-void Texture::Draw(ID3D12GraphicsCommandList * list, int & i, const DirectX::XMFLOAT2 & pos, const DirectX::XMFLOAT2 & size, 
-	const DirectX::XMFLOAT2 & uvPos, const DirectX::XMFLOAT2 & uvSize)
+void Texture::Draw(std::weak_ptr<List>list, int & i, const DirectX::XMFLOAT2 & pos, const DirectX::XMFLOAT2 & size, 
+	const DirectX::XMFLOAT2 & uvPos, const DirectX::XMFLOAT2 & uvSize, const float & alpha, const bool & turnX, const bool & turnY)
 {
 	 XMStoreFloat4x4(&tex[&i].info->matrix, 
 		 DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat2(
@@ -224,13 +231,14 @@ void Texture::Draw(ID3D12GraphicsCommandList * list, int & i, const DirectX::XMF
 			 DirectX::XMLoadFloat2(&DirectX::XMFLOAT2(pos.x, pos.y)))
 	      
 	 );
-	 tex[&i].info->uvPos  = uvPos;
-	 tex[&i].info->uvSize = uvSize;
-	 tex[&i].info->alpha  = 0.5f;
+	 tex[&i].info->uvPos   = uvPos;
+	 tex[&i].info->uvSize  = uvSize;
+	 tex[&i].info->reverse = { (turnX) ? -1.0f : 1.0f, (turnY) ? -1.0f : 1.0f };
+	 tex[&i].info->alpha   = alpha;
 
 	auto heap = descMane.GetHeap(i);
-	list->SetDescriptorHeaps(1, &heap);
-	list->ExecuteBundle(tex[&i].list->GetList());
+	list.lock()->GetList()->SetDescriptorHeaps(1, &heap);
+	list.lock()->GetList()->ExecuteBundle(tex[&i].list->GetList());
 }
 
 // 削除

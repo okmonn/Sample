@@ -34,6 +34,8 @@ namespace tex {
 		DirectX::XMFLOAT2 uvPos;
 		//uvサイズ
 		DirectX::XMFLOAT2 uvSize;
+		//反転
+		DirectX::XMFLOAT2 reverse;
 		//アルファ値
 		float alpha;
 	};
@@ -71,7 +73,9 @@ public:
 	void Load(const std::string& fileName, int& i);
 
 	// 描画
-	void Draw(ID3D12GraphicsCommandList* list, int& i, const DirectX::XMFLOAT2& pos, const DirectX::XMFLOAT2& size, const DirectX::XMFLOAT2& uvPos, const DirectX::XMFLOAT2& uvSize);
+	void Draw(std::weak_ptr<List>list, int& i, const DirectX::XMFLOAT2& pos, const DirectX::XMFLOAT2& size, 
+		const DirectX::XMFLOAT2& uvPos, const DirectX::XMFLOAT2& uvSize, const float& alpha = 1.0f, 
+		const bool& turnX = false, const bool& turnY = false);
 
 	// 削除
 	void Delete(int& i);
