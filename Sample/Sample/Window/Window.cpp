@@ -3,6 +3,7 @@
 #include "../Icon/Icon.h"
 #include <Windows.h>
 #include <tchar.h>
+#include <strsafe.h>
 
 // コンストラクタ　
 Window::Window(void ** handle) : 
@@ -28,22 +29,26 @@ void Window::ChangeTitle(void ** handle, const std::tstring & title)
 }
 
 // ウィンドウのコールバック
-long __stdcall Window::WindowProc(void * hWnd, unsigned int message, long wParam, long lParam)
+#if _WIN64
+long __stdcall Window::WindowProc(void * hWnd, unsigned int message, unsigned __int64 wParam, __int64 lParam)
+#else
+long __stdcall Window::WindowProc(void* hWnd, unsigned int message, long wParam, long lParam)
+#endif
 {
 	switch (message)
 	{
 	case WM_CREATE:
-		return 0;
+		break;
 
 	case WM_PAINT:
-		return 0;
+		break;
 
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
 	}
 
-	return DefWindowProc((HWND)hWnd, message, wParam, lParam);
+	return static_cast<long>(DefWindowProc(reinterpret_cast<HWND>(hWnd), message, wParam, lParam));
 }
 
 // ウィンドウの生成

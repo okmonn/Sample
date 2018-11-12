@@ -115,3 +115,15 @@ void List::SetBarrier(const D3D12_RESOURCE_STATES & befor, const D3D12_RESOURCE_
 
 	list->ResourceBarrier(1, &barrier);
 }
+
+// コンピュートバリアのセット
+void List::SetComputeBarrier(ID3D12Resource * rsc)
+{
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE::D3D12_RESOURCE_BARRIER_TYPE_UAV;
+	barrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAGS::D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource   = rsc;
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_FLAGS::D3D12_RESOURCE_BARRIER_FLAG_NONE;
+
+	list->ResourceBarrier(1, &barrier);
+}

@@ -14,7 +14,11 @@ public:
 
 private:
 	// ウィンドウのコールバック
+#if _WIN64
+	static long __stdcall WindowProc(void* hWnd, unsigned int message, unsigned __int64 wParam, __int64 lParam);
+#else
 	static long __stdcall WindowProc(void* hWnd, unsigned int message, long wParam, long lParam);
+#endif
 
 	// ウィンドウの生成
 	void Create(void** handle);

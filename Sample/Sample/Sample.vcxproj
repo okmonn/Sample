@@ -129,10 +129,12 @@
     <ClCompile Include="Application\Fence\Fence.cpp" />
     <ClCompile Include="Application\List\List.cpp" />
     <ClCompile Include="Application\Pipe\Pipe.cpp" />
+    <ClCompile Include="Application\Pipe\PipeCompute.cpp" />
     <ClCompile Include="Application\Pipe\PipeMane.cpp" />
     <ClCompile Include="Application\Queue\Queue.cpp" />
     <ClCompile Include="Application\Render\Render.cpp" />
     <ClCompile Include="Application\Root\Root.cpp" />
+    <ClCompile Include="Application\Root\RootCompute.cpp" />
     <ClCompile Include="Application\Root\RootMane.cpp" />
     <ClCompile Include="Application\Swap\Swap.cpp" />
     <ClCompile Include="Application\Texture\Texture.cpp" />
@@ -158,11 +160,13 @@
     <ClInclude Include="Application\Fence\Fence.h" />
     <ClInclude Include="Application\List\List.h" />
     <ClInclude Include="Application\Pipe\Pipe.h" />
+    <ClInclude Include="Application\Pipe\PipeCompute.h" />
     <ClInclude Include="Application\Pipe\PipeMane.h" />
     <ClInclude Include="Application\Queue\Queue.h" />
     <ClInclude Include="Application\Release.h" />
     <ClInclude Include="Application\Render\Render.h" />
     <ClInclude Include="Application\Root\Root.h" />
+    <ClInclude Include="Application\Root\RootCompute.h" />
     <ClInclude Include="Application\Root\RootMane.h" />
     <ClInclude Include="Application\Swap\Swap.h" />
     <ClInclude Include="Application\Texture\Texture.h" />
@@ -182,6 +186,28 @@
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\Test.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.1</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.1</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </EntryPointName>
+    </FxCompile>
     <FxCompile Include="Shader\Texture.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
@@ -206,12 +232,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Icon\Icon.rc">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ResourceCompile>
+    <ResourceCompile Include="Icon\Icon.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

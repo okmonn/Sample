@@ -165,6 +165,12 @@
     <ClCompile Include="Application\Compute\Compute.cpp">
       <Filter>Application\Compute</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Root\RootCompute.cpp">
+      <Filter>Application\RootSignature</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Pipe\PipeCompute.cpp">
+      <Filter>Application\Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Application.h">
@@ -263,9 +269,18 @@
     <ClInclude Include="Application\Compute\Compute.h">
       <Filter>Application\Compute</Filter>
     </ClInclude>
+    <ClInclude Include="Application\Root\RootCompute.h">
+      <Filter>Application\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Pipe\PipeCompute.h">
+      <Filter>Application\Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\Texture.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\Test.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>

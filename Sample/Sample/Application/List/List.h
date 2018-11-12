@@ -39,6 +39,9 @@ public:
 	// バリアのセット
 	void SetBarrier(const D3D12_RESOURCE_STATES& befor, const D3D12_RESOURCE_STATES& affter, ID3D12Resource* rsc);
 
+	// コンピュートバリアのセット
+	void SetComputeBarrier(ID3D12Resource * rsc);
+
 	// コマンドアロケータの取得
 	ID3D12CommandAllocator* GetAllo(void) const {
 		return allo;

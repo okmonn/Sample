@@ -12,6 +12,7 @@ class Depth;
 class Fence;
 class RootMane;
 class PipeMane;
+class Compute;
 class Texture;
 
 class Union
@@ -31,11 +32,13 @@ public:
 private:
 	// ルートシグネチャの生成
 	void CreateRoot(const std::string& name, const std::tstring& fileName);
+	void CreateRootCompute(const std::string& name, const std::tstring& fileName);
 	void CreateRoot(void);
 
 	// パイプラインの生成
 	void CreatePipe(const std::string& name, const std::string& rootName, const D3D12_PRIMITIVE_TOPOLOGY_TYPE& type, 
 		const std::initializer_list<int>&index, const bool& depth = false);
+	void CreatePipeCompute(const std::string& name, const std::string& rootName);
 	void CreatePipe(void);
 
 
@@ -62,6 +65,9 @@ private:
 
 	// パイプマネジャー
 	std::unique_ptr<PipeMane>pipe;
+
+	// コンピュート
+	std::shared_ptr<Compute>compute;
 
 	// テクスチャ
 	std::unique_ptr<Texture>tex;

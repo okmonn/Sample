@@ -3,8 +3,6 @@
 #include "../Device/Device.h"
 #include "../Release.h"
 
-#pragma comment (lib, "d3dcompiler.lib")
-
 // コンストラクタ
 Root::Root(std::weak_ptr<Device> dev, const std::tstring & fileName) : 
 	dev(dev), root(nullptr), sig(nullptr), error(nullptr), vertex(nullptr), pixel(nullptr)
@@ -47,7 +45,7 @@ long Root::ShaderCompile(const std::tstring & fileName)
 		OutputDebugString(_T("\nルートシグネチャ情報の取得：失敗\n"));
 	}
 
-	return 0;
+	return hr;
 }
 
 // ルートシグネチャの生成

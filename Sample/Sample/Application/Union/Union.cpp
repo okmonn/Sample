@@ -9,6 +9,7 @@
 #include "../Fence/Fence.h"
 #include "../Root/RootMane.h"
 #include "../Pipe/PipeMane.h"
+#include "../Compute/Compute.h"
 #include "../Texture/Texture.h"
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -40,6 +41,8 @@ Union::Union()
 	CreateRoot();
 	CreatePipe();
 
+	compute = std::make_shared<Compute>(dev, root->GetCompute(rootNo["compute"]), pipe->GetCompute(pipeNo["compute"]));
+
 	tex = std::make_unique<Texture>(dev, root->Get(rootNo["sample"]), pipe->Get(pipeNo["sample"]));
 	tex->Load("avicii.png", n);
 	tex->Load("sample.bmp", m);
@@ -58,6 +61,8 @@ void Union::Set(void)
 	com->GetList()->SetScissor();
 
 	dep->SetDepth(com->GetList()->GetList());
+
+	compute->Do(com->GetList());
 
 	com->GetList()->SetBarrier(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET,
 		ren->GetRsc(swap->Get()->GetCurrentBackBufferIndex()));
@@ -97,9 +102,22 @@ void Union::CreateRoot(const std::string & name, const std::tstring & fileName)
 }
 
 // ルートシグネチャの生成
+void Union::CreateRootCompute(const std::string & name, const std::tstring & fileName)
+{
+	if (rootNo.find(name) != rootNo.end())
+	{
+		return;
+	}
+
+	rootNo[name] = 0;
+	root->CreateRootCompute(rootNo[name], fileName);
+}
+
+// ルートシグネチャの生成
 void Union::CreateRoot(void)
 {
 	CreateRoot("sample", L"Shader/Texture.hlsl");
+	CreateRootCompute("compute", L"Shader/Test.hlsl");
 }
 
 // パイプラインの生成
@@ -116,8 +134,21 @@ void Union::CreatePipe(const std::string & name, const std::string & rootName, c
 }
 
 // パイプラインの生成
+void Union::CreatePipeCompute(const std::string & name, const std::string & rootName)
+{
+	if (pipeNo.find(name) != pipeNo.end())
+	{
+		return;
+	}
+
+	pipeNo[name] = 0;
+	pipe->CreatePipeCompute(pipeNo[name], root->GetCompute(rootNo[rootName]));
+}
+
+// パイプラインの生成
 void Union::CreatePipe(void)
 {
 	CreatePipe("sample", "sample", D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, { 0, 2 }, false);
+	CreatePipeCompute("compute", "compute");
 }
 

@@ -2,7 +2,9 @@
 #include "../Device/Device.h"
 #include "../Swap/Swap.h"
 #include "../Root/Root.h"
+#include "../Root/RootCompute.h"
 #include "Pipe.h"
+#include "PipeCompute.h"
 #include <vector>
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -31,6 +33,7 @@ PipeMane::PipeMane(std::weak_ptr<Device>dev, std::weak_ptr<Swap>swap) :
 	dev(dev), swap(swap)
 {
 	pipe.clear();
+	compute.clear();
 }
 
 // デストラクタ
@@ -49,4 +52,10 @@ void PipeMane::CreatePipe(int & i, std::weak_ptr<Root> root, const D3D12_PRIMITI
 
 	pipe[&i] = std::make_shared<Pipe>(dev, swap, root);
 	pipe[&i]->Create(*input.data(), input.size(), type, depth);
+}
+
+// パイプラインコンピュートクラスの生成
+void PipeMane::CreatePipeCompute(int & i, std::weak_ptr<RootCompute> root)
+{
+	compute[&i] = std::make_shared<PipeCompute>(dev, root);
 }
