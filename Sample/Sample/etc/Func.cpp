@@ -14,3 +14,25 @@ std::wstring func::ChangeWString(const std::string & string)
 
 	return wstr;
 }
+
+// •¶Žš—ñ‚ÌŠm”F
+bool func::CheckChar(const std::string & find, unsigned char * data, const unsigned int & dataSize)
+{
+	int index = 0;
+	for (unsigned int i = 0; i < dataSize; ++i)
+	{
+		if (find[index] == data[i])
+		{
+			if (index + 1 < find.size())
+			{
+				++index;
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}

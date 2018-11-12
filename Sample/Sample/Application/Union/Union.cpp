@@ -9,7 +9,6 @@
 #include "../Fence/Fence.h"
 #include "../Root/RootMane.h"
 #include "../Pipe/PipeMane.h"
-#include "../Compute/Compute.h"
 #include "../Texture/Texture.h"
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -41,8 +40,6 @@ Union::Union()
 	CreateRoot();
 	CreatePipe();
 
-	compute = std::make_shared<Compute>(dev, root->GetCompute(rootNo["compute"]), pipe->GetCompute(pipeNo["compute"]));
-
 	tex = std::make_unique<Texture>(dev, root->Get(rootNo["sample"]), pipe->Get(pipeNo["sample"]));
 	tex->Load("avicii.png", n);
 	tex->Load("sample.bmp", m);
@@ -61,8 +58,6 @@ void Union::Set(void)
 	com->GetList()->SetScissor();
 
 	dep->SetDepth(com->GetList()->GetList());
-
-	compute->Do(com->GetList());
 
 	com->GetList()->SetBarrier(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET,
 		ren->GetRsc(swap->Get()->GetCurrentBackBufferIndex()));

@@ -79,8 +79,8 @@
     <Filter Include="Icon">
       <UniqueIdentifier>{6c3a3b8f-42ca-40b4-a17b-e13a57534516}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Application\Compute">
-      <UniqueIdentifier>{887f52fc-b7d1-42f5-8fe4-0aa85a209bde}</UniqueIdentifier>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{d317ef07-e784-4531-94a6-0d223d5258ed}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -162,14 +162,17 @@
     <ClCompile Include="Application\Camera\Camera.cpp">
       <Filter>Application\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Compute\Compute.cpp">
-      <Filter>Application\Compute</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Root\RootCompute.cpp">
       <Filter>Application\RootSignature</Filter>
     </ClCompile>
     <ClCompile Include="Application\Pipe\PipeCompute.cpp">
       <Filter>Application\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio\XAudio2.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio\SoundLoader.cpp">
+      <Filter>Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -266,14 +269,17 @@
     <ClInclude Include="Icon\Icon.h">
       <Filter>Icon</Filter>
     </ClInclude>
-    <ClInclude Include="Application\Compute\Compute.h">
-      <Filter>Application\Compute</Filter>
-    </ClInclude>
     <ClInclude Include="Application\Root\RootCompute.h">
       <Filter>Application\RootSignature</Filter>
     </ClInclude>
     <ClInclude Include="Application\Pipe\PipeCompute.h">
       <Filter>Application\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\XAudio2.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\SoundLoader.h">
+      <Filter>Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
