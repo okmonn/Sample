@@ -82,8 +82,7 @@ SoundLoader::~SoundLoader()
 // 読み込み
 int SoundLoader::Load(const std::string & fileName)
 {
-	FILE* file = nullptr;
-	if (fopen_s(&file, fileName.c_str(), "rb") != 0)
+	if (fopen_s(&sound[fileName].file, fileName.c_str(), "rb") != 0)
 	{
 		return -1;
 	}
@@ -92,18 +91,18 @@ int SoundLoader::Load(const std::string & fileName)
 	FMT  fmt{};
 	DATA data{};
 
-	fread(&riff, sizeof(RIFF), 1, file);
+	fread(&riff, sizeof(RIFF), 1, sound[fileName].file);
 	if (func::CheckChar("RIFF", riff.id, _countof(riff.id)) != true
 		|| func::CheckChar("WAVE", riff.type, _countof(riff.type)) != true)
 	{
-		fclose(file);
+		fclose(sound[fileName].file);
 		return -1;
 	}
 
-	fread(&fmt, sizeof(FMT), 1, file);
+	fread(&fmt, sizeof(FMT), 1, sound[fileName].file);
 	if (func::CheckChar("fmt ", fmt.id, _countof(fmt.id)) != true)
 	{
-		fclose(file);
+		fclose(sound[fileName].file);
 		return -1;
 	}
 
@@ -111,7 +110,7 @@ int SoundLoader::Load(const std::string & fileName)
 	std::vector<unsigned char>extended(fmt.size - (sizeof(fmt) - sizeof(fmt.id) - sizeof(fmt.size)));
 	if (extended.size() > 0)
 	{
-		fread(extended.data(), sizeof(unsigned char) * extended.size(), 1, file);
+		fread(extended.data(), sizeof(unsigned char) * extended.size(), 1, sound[fileName].file);
 	}
 
 	//ダミー宣言 
@@ -120,7 +119,7 @@ int SoundLoader::Load(const std::string & fileName)
 
 	while (true)
 	{
-		fread(&chunkID[0], sizeof(unsigned char) * chunkID.size(), 1, file);
+		fread(&chunkID[0], sizeof(unsigned char) * chunkID.size(), 1, sound[fileName].file);
 
 		//DATAチャンク発見
 		if (chunkID == "data")
@@ -131,16 +130,16 @@ int SoundLoader::Load(const std::string & fileName)
 		else
 		{
 			unsigned long size = 0;
-			fread(&size, sizeof(size), 1, file);
+			fread(&size, sizeof(size), 1, sound[fileName].file);
 
 			std::vector<unsigned char>data(size);
-			fread(data.data(), sizeof(unsigned char) * data.size(), 1, file);
+			fread(data.data(), sizeof(unsigned char) * data.size(), 1, sound[fileName].file);
 		}
 	}
 
 	//DATAの読み込み 
 	data.id = chunkID;
-	fread(&data.size, sizeof(data.size), 1, file);
+	fread(&data.size, sizeof(data.size), 1, sound[fileName].file);
 
 	sound[fileName].channel = fmt.channel;
 	sound[fileName].sample  = fmt.sample;
@@ -251,7 +250,11 @@ void SoundLoader::LoadStereo16(std::vector<float>& data, FILE * file)
 void SoundLoader::LoadStream(const std::string & fileName)
 {
 	int read = 0;
-	std::vector<float>tmp(sound[fileName].sample / (sound[fileName].bit / 8 * sound[fileName].channel));
+	std::vector<float>tmp(sound[fileName].sample / ((sound[fileName].bit / 8) * sound[fileName].channel));
+	if (tmp.size() % 2 != 0)
+	{
+		tmp.resize(tmp.size() + 1);
+	}
 
 	while (std::feof(sound[fileName].file) == 0 && threadFlag == true)
 	{

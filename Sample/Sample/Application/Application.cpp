@@ -11,6 +11,8 @@ void* Application::winHandle     = nullptr;
 unsigned int Application::width  = 0;
 unsigned int Application::height = 0;
 
+int p = 0;
+
 // コンストラクタ
 Application::Application(const unsigned int & width, const unsigned int & height)
 {
@@ -26,6 +28,9 @@ Application::Application(const unsigned int & width, const unsigned int & height
 	input = std::make_unique<Input>();
 	sound = std::make_unique<SoundMane>();
 	un    = std::make_unique<Union>();
+
+	sound->Load("妖はるかなり～妖々夢.wav", p);
+	sound->Play(p);
 }
 
 // デストラクタ
