@@ -25,10 +25,14 @@ class SoundLoader
 	};
 
 public:
-	// コンストラクタ
-	SoundLoader();
 	// デストラクタ
 	~SoundLoader();
+
+	// インスタンス変数の取得
+	static SoundLoader& Get(void) {
+		static SoundLoader instance;
+		return instance;
+	}
 
 	// 読み込み
 	int Load(const std::string& fileName);
@@ -50,7 +54,17 @@ public:
 		return sound[fileName].data;
 	}
 
+	// 削除
+	void Delete(const std::string& fileName);
+
 private:
+	// コンストラクタ
+	SoundLoader();
+	SoundLoader(const SoundLoader&) {
+	}
+	void operator=(const SoundLoader&) {
+	}
+
 	// 8ビットモノラル
 	void LoadMono8(std::vector<float>& data, FILE* file);
 

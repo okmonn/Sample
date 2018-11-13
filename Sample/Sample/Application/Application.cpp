@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "../Window/Window.h"
 #include "../Input/Input.h"
+#include "../Audio/SoundMane.h"
 #include "Union/Union.h"
 #include <d3d12.h>
 
@@ -23,6 +24,7 @@ Application::Application(const unsigned int & width, const unsigned int & height
 
 	win   = std::make_unique<Window>(&winHandle);
 	input = std::make_unique<Input>();
+	sound = std::make_unique<SoundMane>();
 	un    = std::make_unique<Union>();
 }
 

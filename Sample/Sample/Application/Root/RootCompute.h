@@ -27,7 +27,7 @@ public:
 	ID3DBlob* GetError(void) const {
 		return error;
 	}
-	// 頂点シェーダの取得
+	// コンピュートシェーダの取得
 	ID3DBlob* GetCompute(void) const {
 		return compute;
 	}

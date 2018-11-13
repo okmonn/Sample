@@ -4,6 +4,7 @@
 
 class Window;
 class Input;
+class SoundMane;
 class Union;
 
 class Application
@@ -42,6 +43,9 @@ private:
 
 	// インプット
 	std::unique_ptr<Input>input;
+
+	// サウンドマネージャー
+	std::unique_ptr<SoundMane>sound;
 
 	// ユニオン
 	std::unique_ptr<Union>un;

@@ -69,6 +69,14 @@ SoundLoader::SoundLoader() :
 // デストラクタ
 SoundLoader::~SoundLoader()
 {
+	threadFlag = false;
+	for (auto& i : th)
+	{
+		if (i.joinable() == true)
+		{
+			i.join();
+		}
+	}
 }
 
 // 読み込み
@@ -264,4 +272,13 @@ void SoundLoader::LoadStream(const std::string & fileName)
 	}
 
 	fclose(sound[fileName].file);
+}
+
+// 削除
+void SoundLoader::Delete(const std::string & fileName)
+{
+	if (sound.find(fileName) != sound.end())
+	{
+		sound.erase(sound.find(fileName));
+	}
 }

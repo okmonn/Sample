@@ -16,16 +16,20 @@
                                   "space          = 0, "\
                                   "visibility     = SHADER_VISIBILITY_ALL)"
 
-RWByteAddressBuffer buffer : register(u0);
+struct Tmp
+{
+    uint msg[14];
+};
+
+RWStructuredBuffer<uint> buffer : register(u0);
 
 [RootSignature(RS)]
-[numthreads(1, 1, 1)]
-void CS( uint3 DTid : SV_DispatchThreadID )
+[numthreads(14, 1, 1)]
+void CS(uint3 DTid : SV_DispatchThreadID)
 {
-    float v = asfloat(buffer.Load(4));
+    uint output[14] = { 72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33, 0 };
 
-    v *= 2.0f;
-    buffer.Store(4, asuint(v));
+    buffer[DTid.x] = DTid.x;
 
-    AllMemoryBarrierWithGroupSync();
+    GroupMemoryBarrierWithGroupSync();
 }

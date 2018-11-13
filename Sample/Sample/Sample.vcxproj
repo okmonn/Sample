@@ -122,6 +122,7 @@
     <ClCompile Include="Application\Application.cpp" />
     <ClCompile Include="Application\Camera\Camera.cpp" />
     <ClCompile Include="Application\Command\Command.cpp" />
+    <ClCompile Include="Application\Compute\Compute.cpp" />
     <ClCompile Include="Application\Depth\Depth.cpp" />
     <ClCompile Include="Application\DescriptorMane\DescriptorMane.cpp" />
     <ClCompile Include="Application\Device\Device.cpp" />
@@ -140,7 +141,9 @@
     <ClCompile Include="Application\Texture\TextureLoader.cpp" />
     <ClCompile Include="Application\Texture\WICTextureLoader12.cpp" />
     <ClCompile Include="Application\Union\Union.cpp" />
+    <ClCompile Include="Audio\Sound.cpp" />
     <ClCompile Include="Audio\SoundLoader.cpp" />
+    <ClCompile Include="Audio\SoundMane.cpp" />
     <ClCompile Include="Audio\XAudio2.cpp" />
     <ClCompile Include="etc\Func.cpp" />
     <ClCompile Include="Input\Input.cpp" />
@@ -154,6 +157,7 @@
     <ClInclude Include="Application\Application.h" />
     <ClInclude Include="Application\Camera\Camera.h" />
     <ClInclude Include="Application\Command\Command.h" />
+    <ClInclude Include="Application\Compute\Compute.h" />
     <ClInclude Include="Application\Depth\Depth.h" />
     <ClInclude Include="Application\DescriptorMane\DescriptorMane.h" />
     <ClInclude Include="Application\Device\Device.h" />
@@ -173,7 +177,9 @@
     <ClInclude Include="Application\Texture\TextureLoader.h" />
     <ClInclude Include="Application\Texture\WICTextureLoader12.h" />
     <ClInclude Include="Application\Union\Union.h" />
+    <ClInclude Include="Audio\Sound.h" />
     <ClInclude Include="Audio\SoundLoader.h" />
+    <ClInclude Include="Audio\SoundMane.h" />
     <ClInclude Include="Audio\XAudio2.h" />
     <ClInclude Include="etc\Func.h" />
     <ClInclude Include="etc\tString.h" />

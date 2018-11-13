@@ -82,6 +82,9 @@
     <Filter Include="Audio">
       <UniqueIdentifier>{d317ef07-e784-4531-94a6-0d223d5258ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Application\Compute">
+      <UniqueIdentifier>{74da586f-1864-451a-9306-8e35675694a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -172,6 +175,15 @@
       <Filter>Audio</Filter>
     </ClCompile>
     <ClCompile Include="Audio\SoundLoader.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Compute\Compute.cpp">
+      <Filter>Application\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio\Sound.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio\SoundMane.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
   </ItemGroup>
@@ -279,6 +291,15 @@
       <Filter>Audio</Filter>
     </ClInclude>
     <ClInclude Include="Audio\SoundLoader.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Compute\Compute.h">
+      <Filter>Application\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\Sound.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\SoundMane.h">
       <Filter>Audio</Filter>
     </ClInclude>
   </ItemGroup>

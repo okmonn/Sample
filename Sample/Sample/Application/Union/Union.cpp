@@ -9,6 +9,7 @@
 #include "../Fence/Fence.h"
 #include "../Root/RootMane.h"
 #include "../Pipe/PipeMane.h"
+#include "../Compute/Compute.h"
 #include "../Texture/Texture.h"
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -40,6 +41,8 @@ Union::Union()
 	CreateRoot();
 	CreatePipe();
 
+	compute = std::make_unique<Compute>(dev, root->GetCompute(rootNo["compute"]), pipe->GetCompute(pipeNo["compute"]));
+
 	tex = std::make_unique<Texture>(dev, root->Get(rootNo["sample"]), pipe->Get(pipeNo["sample"]));
 	tex->Load("avicii.png", n);
 	tex->Load("sample.bmp", m);
@@ -53,6 +56,8 @@ Union::~Union()
 // •`‰æ€”õ
 void Union::Set(void)
 {
+	compute->Execution();
+
 	com->GetList()->Reset(nullptr);
 	com->GetList()->SetViewport();
 	com->GetList()->SetScissor();
