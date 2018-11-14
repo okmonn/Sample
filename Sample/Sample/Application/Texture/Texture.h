@@ -81,6 +81,7 @@ public:
 	void Delete(int& i);
 
 private:
+	float a;
 	// 頂点のセット
 	void SetVertex(void);
 

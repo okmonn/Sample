@@ -21,7 +21,7 @@ class SoundLoader
 		//ファイル
 		FILE* file;
 		//波形データ
-		std::shared_ptr<std::map<int, std::vector<float>>>data;
+		std::shared_ptr<std::vector<std::vector<float>>>data;
 	};
 
 public:
@@ -50,7 +50,7 @@ public:
 		return sound[fileName].bit;
 	}
 	// 波形データの取得
-	std::shared_ptr<std::map<int, std::vector<float>>>GetData(const std::string& fileName) {
+	std::shared_ptr<std::vector<std::vector<float>>>GetData(const std::string& fileName) {
 		return sound[fileName].data;
 	}
 

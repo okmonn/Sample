@@ -153,7 +153,7 @@ int SoundLoader::Load(const std::string & fileName)
 		{
 			if (itr->joinable() == false)
 			{
-				sound[fileName].data = std::make_shared<std::map<int, std::vector<float>>>();
+				sound[fileName].data = std::make_shared<std::vector<std::vector<float>>>();
 				*itr = std::thread(&SoundLoader::LoadStream, this, fileName);
 				flag = false;
 				break;
@@ -179,8 +179,8 @@ void SoundLoader::LoadMono8(std::vector<float>& data, FILE * file)
 			tmp = 0;
 		}
 
-		//float値に変換・音データを0～2の範囲に正規化
-		i = static_cast<float>(tmp) / OVERFLLOW_CHAR;
+		//float値に変換・音データを-1～1の範囲に正規化
+		i = static_cast<float>(tmp) / OVERFLLOW_CHAR - 1.0f;
 	}
 }
 
@@ -219,9 +219,9 @@ void SoundLoader::LoadStereo8(std::vector<float>& data, FILE * file)
 			tmp = 0;
 		}
 
-		//float値に変換・音データを0～2の範囲に正規化
-		data[i]     = static_cast<float>(tmp.left)  / OVERFLLOW_CHAR;
-		data[i + 1] = static_cast<float>(tmp.right) / OVERFLLOW_CHAR;
+		//float値に変換・音データを-1～1の範囲に正規化
+		data[i]     = static_cast<float>(tmp.left)  / OVERFLLOW_CHAR - 1.0f;
+		data[i + 1] = static_cast<float>(tmp.right) / OVERFLLOW_CHAR - 1.0f;
 	}
 }
 
@@ -250,7 +250,8 @@ void SoundLoader::LoadStereo16(std::vector<float>& data, FILE * file)
 void SoundLoader::LoadStream(const std::string & fileName)
 {
 	int read = 0;
-	std::vector<float>tmp(sound[fileName].sample / ((sound[fileName].bit / 8) * sound[fileName].channel));
+	//1フレーム間の波形データ
+	std::vector<float>tmp((sound[fileName].sample * ((sound[fileName].bit / 8) * sound[fileName].channel)) / 30);
 	if (tmp.size() % 2 != 0)
 	{
 		tmp.resize(tmp.size() + 1);
@@ -270,7 +271,7 @@ void SoundLoader::LoadStream(const std::string & fileName)
 			break;
 		}
 
-		sound[fileName].data->insert(std::make_pair(read, tmp));
+		sound[fileName].data->push_back(tmp);
 		++read;
 	}
 

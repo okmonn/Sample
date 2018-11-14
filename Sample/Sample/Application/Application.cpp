@@ -29,7 +29,7 @@ Application::Application(const unsigned int & width, const unsigned int & height
 	sound = std::make_unique<SoundMane>();
 	un    = std::make_unique<Union>();
 
-	sound->Load("—d‚Í‚é‚©‚È‚è`—dX–².wav", p);
+	sound->Load("ƒPƒ€ƒŠ.wav", p);
 	sound->Play(p);
 }
 

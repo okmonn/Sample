@@ -56,7 +56,7 @@ private:
 	bool threadFlag;
 
 	// 波形データ
-	std::weak_ptr<std::map<int, std::vector<float>>>data;
+	std::weak_ptr<std::vector<std::vector<float>>>data;
 
 	// スレッド
 	std::thread th;

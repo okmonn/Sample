@@ -186,6 +186,9 @@
     <ClCompile Include="Audio\SoundMane.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
+    <ClCompile Include="Audio\SoundFunc.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\Application.h">
@@ -302,12 +305,18 @@
     <ClInclude Include="Audio\SoundMane.h">
       <Filter>Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Audio\SoundFunc.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\Texture.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="Shader\Test.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FFT.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>

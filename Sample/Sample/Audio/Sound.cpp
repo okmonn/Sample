@@ -5,12 +5,13 @@
 #include <ks.h>
 #include <ksmedia.h>
 #include <tchar.h>
+#include "SoundFunc.h"
 
 // 解放マクロ
 #define Destroy(X) { if((X) != nullptr) (X)->DestroyVoice(); (X) = nullptr; }
 
 // バッファの最大数
-#define BUFFER_MAX 2
+#define BUFFER_MAX 3
 
 // スピーカー設定用配列
 const DWORD spk[] = {
@@ -86,20 +87,21 @@ void Sound::UpData(void)
 	while (threadFlag)
 	{
 		voice->GetState(&st);
-		if (st.BuffersQueued >= BUFFER_MAX)
-		{
-			continue;
-		}
-		
-		if (data.lock()->find(index) == data.lock()->end()
-			|| data.lock()->size() <= BUFFER_MAX)
+		if (st.BuffersQueued >= BUFFER_MAX
+			|| data.lock()->size() <= BUFFER_MAX
+			|| index >= data.lock()->size())
 		{
 			continue;
 		}
 
+		std::vector<float>real;
+		std::vector<float>imag;
+
+		//sound::FFT(data.lock()->at(index), real, imag, data.lock()->at(index).size());
+
 		XAUDIO2_BUFFER buf{};
-		buf.AudioBytes = sizeof(float) * data.lock()->find(index)->second.size();
-		buf.pAudioData = (BYTE*)(&data.lock()->find(index)->second[0]);
+		buf.AudioBytes = sizeof(float) * data.lock()->at(index).size();
+		buf.pAudioData = (unsigned char*)(data.lock()->at(index).data());
 
 		auto hr = voice->SubmitSourceBuffer(&buf);
 		if (FAILED(hr))
