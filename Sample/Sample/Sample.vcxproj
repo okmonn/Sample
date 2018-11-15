@@ -126,6 +126,7 @@
     <ClCompile Include="Application\Depth\Depth.cpp" />
     <ClCompile Include="Application\DescriptorMane\DescriptorMane.cpp" />
     <ClCompile Include="Application\Device\Device.cpp" />
+    <ClCompile Include="Application\DFT\DFT.cpp" />
     <ClCompile Include="Application\Fence\Fence.cpp" />
     <ClCompile Include="Application\List\List.cpp" />
     <ClCompile Include="Application\Pipe\Pipe.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Application\Depth\Depth.h" />
     <ClInclude Include="Application\DescriptorMane\DescriptorMane.h" />
     <ClInclude Include="Application\Device\Device.h" />
+    <ClInclude Include="Application\DFT\DFT.h" />
     <ClInclude Include="Application\Fence\Fence.h" />
     <ClInclude Include="Application\List\List.h" />
     <ClInclude Include="Application\Pipe\Pipe.h" />
@@ -196,7 +198,7 @@
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader\FFT.hlsl">
+    <FxCompile Include="Shader\DFT.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>

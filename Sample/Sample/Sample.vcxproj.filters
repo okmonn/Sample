@@ -85,6 +85,9 @@
     <Filter Include="Application\Compute">
       <UniqueIdentifier>{74da586f-1864-451a-9306-8e35675694a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Application\DFT">
+      <UniqueIdentifier>{b4d886ee-8cd3-4115-956e-bd891f4263aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -188,6 +191,9 @@
     </ClCompile>
     <ClCompile Include="Audio\SoundFunc.cpp">
       <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\DFT\DFT.cpp">
+      <Filter>Application\DFT</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -308,6 +314,9 @@
     <ClInclude Include="Audio\SoundFunc.h">
       <Filter>Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Application\DFT\DFT.h">
+      <Filter>Application\DFT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\Texture.hlsl">
@@ -316,7 +325,7 @@
     <FxCompile Include="Shader\Test.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\FFT.hlsl">
+    <FxCompile Include="Shader\DFT.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>

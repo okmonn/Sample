@@ -16,12 +16,7 @@
                                   "space          = 0, "\
                                   "visibility     = SHADER_VISIBILITY_ALL)"
 
-struct Tmp
-{
-    uint msg[14];
-};
-
-RWStructuredBuffer<uint> buffer : register(u0);
+RWStructuredBuffer<float> buffer : register(u0);
 
 [RootSignature(RS)]
 [numthreads(14, 1, 1)]
@@ -29,7 +24,7 @@ void CS(uint3 DTid : SV_DispatchThreadID)
 {
     uint output[14] = { 72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33, 0 };
 
-    buffer[DTid.x] = DTid.x;
+    buffer[DTid.x] += DTid.x;
 
     GroupMemoryBarrierWithGroupSync();
 }

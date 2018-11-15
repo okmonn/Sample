@@ -35,10 +35,10 @@ long Compute::CreateUavRsc(void)
 	}
 
 	D3D12_HEAP_PROPERTIES prop{};
-	prop.CPUPageProperty      = D3D12_CPU_PAGE_PROPERTY::D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+	prop.CPUPageProperty      = D3D12_CPU_PAGE_PROPERTY::D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
 	prop.CreationNodeMask     = 1;
-	prop.MemoryPoolPreference = D3D12_MEMORY_POOL::D3D12_MEMORY_POOL_UNKNOWN;
-	prop.Type                 = D3D12_HEAP_TYPE::D3D12_HEAP_TYPE_DEFAULT;
+	prop.MemoryPoolPreference = D3D12_MEMORY_POOL::D3D12_MEMORY_POOL_L0;
+	prop.Type                 = D3D12_HEAP_TYPE::D3D12_HEAP_TYPE_CUSTOM;
 	prop.VisibleNodeMask      = 1;
 
 	D3D12_RESOURCE_DESC desc{};
@@ -62,8 +62,8 @@ void Compute::CreateView(void)
 	D3D12_UNORDERED_ACCESS_VIEW_DESC desc{};
 	desc.ViewDimension              = D3D12_UAV_DIMENSION_BUFFER;
 	desc.Format                     = DXGI_FORMAT_UNKNOWN;
-	desc.Buffer.NumElements         = sizeof(unsigned int) * 14;
-	desc.Buffer.StructureByteStride = sizeof(unsigned int);
+	desc.Buffer.NumElements         = sizeof(float) * 14;
+	desc.Buffer.StructureByteStride = sizeof(float);
 
 	dev.lock()->GetDev()->CreateUnorderedAccessView(descMane.GetRsc(uav), nullptr, &desc, descMane.GetHeap(uav)->GetCPUDescriptorHandleForHeapStart());
 }
@@ -120,6 +120,14 @@ long Compute::Map(void)
 // Às
 void Compute::Execution(void)
 {
+	D3D12_RANGE range{0, 1};
+	descMane.GetRsc(uav)->Map(0, &range, (void**)&data);
+	const float a[] = {
+		100,100,100,100,100,100,100,100,100,100,100,100,100,100,
+	};
+	memcpy(data, &a[0], sizeof(a));
+	descMane.GetRsc(uav)->Unmap(0, &range);
+
 	com->GetList()->Reset(nullptr);
 
 	com->GetList()->GetList()->SetComputeRootSignature(root.lock()->Get());
@@ -143,7 +151,42 @@ void Compute::Execution(void)
 	fence->Wait();
 
 	Map();
-	int* ptr = &reinterpret_cast<int*>(data)[0];
-	std::vector<int> p(ptr, ptr + 14);
+	float* ptr = &data[0];
+	std::vector<float> p(ptr, ptr + 14);
 	int n = 0;
+
+	{
+		D3D12_RANGE range{ 0, 1 };
+		descMane.GetRsc(uav)->Map(0, &range, (void**)&data);
+		memset(data, 0, sizeof(float) * 14);
+		descMane.GetRsc(uav)->Unmap(0, &range);
+
+		com->GetList()->Reset(nullptr);
+
+		com->GetList()->GetList()->SetComputeRootSignature(root.lock()->Get());
+		com->GetList()->SetPipe(pipe.lock()->Get());
+
+		auto heap = descMane.GetHeap(uav);
+		com->GetList()->GetList()->SetDescriptorHeaps(1, &heap);
+		com->GetList()->GetList()->SetComputeRootDescriptorTable(0, heap->GetGPUDescriptorHandleForHeapStart());
+
+		com->GetList()->GetList()->Dispatch(1, 1, 1);
+
+		com->GetList()->SetBarrier(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE, descMane.GetRsc(uav));
+
+		com->GetList()->GetList()->CopyResource(descMane.GetRsc(copy), descMane.GetRsc(uav));
+
+		com->GetList()->Close();
+		ID3D12CommandList* list = com->GetList()->GetList();
+		com->GetQueue()->Execute(&list, 1);
+
+		fence->Wait();
+
+		Map();
+		float* ptr = &data[0];
+		std::vector<float> p(ptr, ptr + 14);
+
+		int n = 0;
+	}
 }
