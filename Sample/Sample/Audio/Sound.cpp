@@ -11,7 +11,7 @@
 #define Destroy(X) { if((X) != nullptr) (X)->DestroyVoice(); (X) = nullptr; }
 
 // バッファの最大数
-#define BUFFER_MAX 3
+#define BUFFER_MAX 4
 
 // スピーカー設定用配列
 const DWORD spk[] = {

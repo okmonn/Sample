@@ -62,7 +62,7 @@ void Compute::CreateView(void)
 	D3D12_UNORDERED_ACCESS_VIEW_DESC desc{};
 	desc.ViewDimension              = D3D12_UAV_DIMENSION_BUFFER;
 	desc.Format                     = DXGI_FORMAT_UNKNOWN;
-	desc.Buffer.NumElements         = sizeof(float) * 14;
+	desc.Buffer.NumElements         = 14;
 	desc.Buffer.StructureByteStride = sizeof(float);
 
 	dev.lock()->GetDev()->CreateUnorderedAccessView(descMane.GetRsc(uav), nullptr, &desc, descMane.GetHeap(uav)->GetCPUDescriptorHandleForHeapStart());
@@ -141,7 +141,7 @@ void Compute::Execution(void)
 
 	com->GetList()->SetBarrier(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE, descMane.GetRsc(uav));
-
+	
 	com->GetList()->GetList()->CopyResource(descMane.GetRsc(copy), descMane.GetRsc(uav));
 
 	com->GetList()->Close();

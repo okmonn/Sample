@@ -251,7 +251,7 @@ void SoundLoader::LoadStream(const std::string & fileName)
 {
 	int read = 0;
 	//1フレーム間の波形データ
-	std::vector<float>tmp((sound[fileName].sample * ((sound[fileName].bit / 8) * sound[fileName].channel)) / 30);
+	std::vector<float>tmp((sound[fileName].sample * ((sound[fileName].bit / 8) * sound[fileName].channel)) / 60);
 	if (tmp.size() % 2 != 0)
 	{
 		tmp.resize(tmp.size() + 1);
