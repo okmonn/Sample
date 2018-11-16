@@ -86,10 +86,14 @@ void Sound::UpData(void)
 	XAUDIO2_VOICE_STATE st{};
 	while (threadFlag)
 	{
+		if (data.lock()->size() <= BUFFER_MAX
+			|| data.lock()->at(index).size() <= 0)
+		{
+			continue;
+		}
+
 		voice->GetState(&st);
-		if (st.BuffersQueued >= BUFFER_MAX
-			|| data.lock()->size() <= BUFFER_MAX
-			|| index >= data.lock()->size())
+		if (st.BuffersQueued >= BUFFER_MAX)
 		{
 			continue;
 		}

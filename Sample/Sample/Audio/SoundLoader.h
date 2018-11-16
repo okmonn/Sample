@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <thread>
+#include <functional>
 
 struct _iobuf;
 typedef _iobuf FILE;
@@ -65,17 +66,8 @@ private:
 	void operator=(const SoundLoader&) {
 	}
 
-	// 8ビットモノラル
-	void LoadMono8(std::vector<float>& data, FILE* file);
-
-	// 16ビットモノラル
-	void LoadMono16(std::vector<float>& data, FILE* file);
-
-	// 8ビットステレオ
-	void LoadStereo8(std::vector<float>& data, FILE* file);
-
-	// 16ビットステレオ
-	void LoadStereo16(std::vector<float>& data, FILE* file);
+	// 読み込みテーブルのセット
+	void SetTbl(void);
 
 	// 非同期読み込み
 	void LoadStream(const std::string& fileName);
@@ -89,4 +81,7 @@ private:
 
 	// スレッド
 	std::vector<std::thread>th;
+
+	// 
+	std::map<int, std::map<int, std::function<void(std::vector<float>& tmp, FILE* file)>>>load;
 };

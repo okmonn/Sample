@@ -1,8 +1,119 @@
 #include "SoundFunc.h"
 #include <math.h>
 
+// ステレオ8ビット
+struct Stereo8 {
+	unsigned char left;
+	unsigned char right;
+
+	void operator=(const int& i) {
+		left = i;
+		right = i;
+	}
+};
+
+// ステレオ16ビット
+struct Stereo16 {
+	short left;
+	short right;
+
+	void operator=(const int& i) {
+		left = i;
+		right = i;
+	}
+};
+
 // 円周率
 #define PI 3.14159265f
+
+// short型のオーバーフローの防止
+#define OVERFLLOW_SHORT 32768.0f
+
+// char型のオーバーフローの防止
+#define OVERFLLOW_CHAR 127.0f
+
+
+// 8ビットモノラル
+void sound::LoadMono8(std::vector<float>& data, FILE * file)
+{
+	unsigned char tmp = 0;
+	for (auto& i : data)
+	{
+		if (feof(file) == 0)
+		{
+			fread(&tmp, sizeof(unsigned char), 1, file);
+		}
+		else
+		{
+			tmp = 0;
+		}
+
+		//float値に変換・音データを-1～1の範囲に正規化
+		i = static_cast<float>(tmp) / OVERFLLOW_CHAR - 1.0f;
+	}
+}
+
+// 16ビットモノラル
+void sound::LoadMono16(std::vector<float>& data, FILE * file)
+{
+	short tmp = 0;
+	for (auto& i : data)
+	{
+		if (feof(file) == 0)
+		{
+			fread(&tmp, sizeof(short), 1, file);
+		}
+		else
+		{
+			tmp = 0;
+		}
+
+		//float値に変換・音データを-1～1の範囲に正規化
+		i = static_cast<float>(tmp) / OVERFLLOW_SHORT;
+	}
+}
+
+// 8ビットステレオ
+void sound::LoadStereo8(std::vector<float>& data, FILE * file)
+{
+	Stereo8 tmp = {};
+	for (unsigned int i = 0; i < data.size(); i += 2)
+	{
+		if (feof(file) == 0)
+		{
+			fread(&tmp, sizeof(Stereo8), 1, file);
+		}
+		else
+		{
+			tmp = 0;
+		}
+
+		//float値に変換・音データを-1～1の範囲に正規化
+		data[i] = static_cast<float>(tmp.left) / OVERFLLOW_CHAR - 1.0f;
+		data[i + 1] = static_cast<float>(tmp.right) / OVERFLLOW_CHAR - 1.0f;
+	}
+}
+
+// 16ビットステレオ
+void sound::LoadStereo16(std::vector<float>& data, FILE * file)
+{
+	Stereo16 tmp = {};
+	for (unsigned int i = 0; i < data.size(); i += 2)
+	{
+		if (feof(file) == 0)
+		{
+			fread(&tmp, sizeof(Stereo16), 1, file);
+		}
+		else
+		{
+			tmp = 0;
+		}
+
+		//float値に変換
+		data[i] = static_cast<float>(tmp.left) / OVERFLLOW_SHORT;
+		data[i + 1] = static_cast<float>(tmp.right) / OVERFLLOW_SHORT;
+	}
+}
 
 // ログ計算
 int sound::Log(const int & bottom, const int & value)

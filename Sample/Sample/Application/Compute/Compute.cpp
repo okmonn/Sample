@@ -126,7 +126,7 @@ void Compute::Execution(void)
 		100,100,100,100,100,100,100,100,100,100,100,100,100,100,
 	};
 	memcpy(data, &a[0], sizeof(a));
-	descMane.GetRsc(uav)->Unmap(0, &range);
+	//descMane.GetRsc(uav)->Unmap(0, &range);
 
 	com->GetList()->Reset(nullptr);
 
@@ -142,7 +142,7 @@ void Compute::Execution(void)
 	com->GetList()->SetBarrier(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE, descMane.GetRsc(uav));
 	
-	com->GetList()->GetList()->CopyResource(descMane.GetRsc(copy), descMane.GetRsc(uav));
+	//com->GetList()->GetList()->CopyResource(descMane.GetRsc(copy), descMane.GetRsc(uav));
 
 	com->GetList()->Close();
 	ID3D12CommandList* list = com->GetList()->GetList();
@@ -150,16 +150,16 @@ void Compute::Execution(void)
 
 	fence->Wait();
 
-	Map();
+	//Map();
 	float* ptr = &data[0];
 	std::vector<float> p(ptr, ptr + 14);
 	int n = 0;
 
 	{
 		D3D12_RANGE range{ 0, 1 };
-		descMane.GetRsc(uav)->Map(0, &range, (void**)&data);
+		//descMane.GetRsc(uav)->Map(0, &range, (void**)&data);
 		memset(data, 0, sizeof(float) * 14);
-		descMane.GetRsc(uav)->Unmap(0, &range);
+		//descMane.GetRsc(uav)->Unmap(0, &range);
 
 		com->GetList()->Reset(nullptr);
 
@@ -175,7 +175,7 @@ void Compute::Execution(void)
 		com->GetList()->SetBarrier(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 			D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE, descMane.GetRsc(uav));
 
-		com->GetList()->GetList()->CopyResource(descMane.GetRsc(copy), descMane.GetRsc(uav));
+		//com->GetList()->GetList()->CopyResource(descMane.GetRsc(copy), descMane.GetRsc(uav));
 
 		com->GetList()->Close();
 		ID3D12CommandList* list = com->GetList()->GetList();
@@ -183,7 +183,7 @@ void Compute::Execution(void)
 
 		fence->Wait();
 
-		Map();
+		//Map();
 		float* ptr = &data[0];
 		std::vector<float> p(ptr, ptr + 14);
 

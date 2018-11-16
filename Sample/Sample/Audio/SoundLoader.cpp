@@ -1,37 +1,10 @@
 #include "SoundLoader.h"
+#include "SoundFunc.h"
 #include "../etc/Func.h"
 #include <tchar.h>
 
 // スレッド最大数
 #define THREAD_MAX 5
-
-// short型のオーバーフローの防止
-#define OVERFLLOW_SHORT 32768.0f
-
-// char型のオーバーフローの防止
-#define OVERFLLOW_CHAR 127.0f
-
-// ステレオ8ビット
-struct Stereo8 {
-	unsigned char left;
-	unsigned char right;
-
-	void operator=(const int& i) {
-		left = i;
-		right = i;
-	}
-};
-
-// ステレオ16ビット
-struct Stereo16 {
-	short left;
-	short right;
-
-	void operator=(const int& i) {
-		left = i;
-		right = i;
-	}
-};
 
 // RIFF
 struct RIFF {
@@ -64,6 +37,8 @@ SoundLoader::SoundLoader() :
 {
 	sound.clear();
 	th.resize(THREAD_MAX);
+
+	SetTbl();
 }
 
 // デストラクタ
@@ -77,6 +52,26 @@ SoundLoader::~SoundLoader()
 			i.join();
 		}
 	}
+}
+
+// 読み込みテーブルのセット
+void SoundLoader::SetTbl(void)
+{
+	load[1][8] = [&](std::vector<float>& tmp, FILE* file)->void {
+		sound::LoadMono8(tmp, file);
+	};
+
+	load[1][16] = [&](std::vector<float>& tmp, FILE* file)->void {
+		sound::LoadMono16(tmp, file);
+	};
+
+	load[2][8] = [&](std::vector<float>& tmp, FILE* file)->void {
+		sound::LoadStereo8(tmp, file);
+	};
+
+	load[2][16] = [&](std::vector<float>& tmp, FILE* file)->void {
+		sound::LoadStereo16(tmp, file);
+	};
 }
 
 // 読み込み
@@ -164,92 +159,9 @@ int SoundLoader::Load(const std::string & fileName)
 	return 0;
 }
 
-// 8ビットモノラル
-void SoundLoader::LoadMono8(std::vector<float>& data, FILE * file)
-{
-	unsigned char tmp = 0;
-	for (auto& i : data)
-	{
-		if (feof(file) == 0)
-		{
-			fread(&tmp, sizeof(unsigned char), 1, file);
-		}
-		else
-		{
-			tmp = 0;
-		}
-
-		//float値に変換・音データを-1～1の範囲に正規化
-		i = static_cast<float>(tmp) / OVERFLLOW_CHAR - 1.0f;
-	}
-}
-
-// 16ビットモノラル
-void SoundLoader::LoadMono16(std::vector<float>& data, FILE * file)
-{
-	short tmp = 0;
-	for (auto& i : data)
-	{
-		if (feof(file) == 0)
-		{
-			fread(&tmp, sizeof(short), 1, file);
-		}
-		else
-		{
-			tmp = 0;
-		}
-
-		//float値に変換・音データを-1～1の範囲に正規化
-		i = static_cast<float>(tmp) / OVERFLLOW_SHORT;
-	}
-}
-
-// 8ビットステレオ
-void SoundLoader::LoadStereo8(std::vector<float>& data, FILE * file)
-{
-	Stereo8 tmp = {};
-	for (unsigned int i = 0; i < data.size(); i += 2)
-	{
-		if (feof(file) == 0)
-		{
-			fread(&tmp, sizeof(Stereo8), 1, file);
-		}
-		else
-		{
-			tmp = 0;
-		}
-
-		//float値に変換・音データを-1～1の範囲に正規化
-		data[i]     = static_cast<float>(tmp.left)  / OVERFLLOW_CHAR - 1.0f;
-		data[i + 1] = static_cast<float>(tmp.right) / OVERFLLOW_CHAR - 1.0f;
-	}
-}
-
-// 16ビットステレオ
-void SoundLoader::LoadStereo16(std::vector<float>& data, FILE * file)
-{
-	Stereo16 tmp = {};
-	for (unsigned int i = 0; i < data.size(); i += 2)
-	{
-		if (feof(file) == 0)
-		{
-			fread(&tmp, sizeof(Stereo16), 1, file);
-		}
-		else
-		{
-			tmp = 0;
-		}
-
-		//float値に変換
-		data[i]     = static_cast<float>(tmp.left)  / OVERFLLOW_SHORT;
-		data[i + 1] = static_cast<float>(tmp.right) / OVERFLLOW_SHORT;
-	}
-}
-
 // 非同期読み込み
 void SoundLoader::LoadStream(const std::string & fileName)
 {
-	int read = 0;
 	//1フレーム間の波形データ
 	std::vector<float>tmp((sound[fileName].sample * ((sound[fileName].bit / 8) * sound[fileName].channel)) / 60);
 	if (tmp.size() % 2 != 0)
@@ -259,20 +171,9 @@ void SoundLoader::LoadStream(const std::string & fileName)
 
 	while (std::feof(sound[fileName].file) == 0 && threadFlag == true)
 	{
-		switch (sound[fileName].channel)
-		{
-		case 1:
-			(sound[fileName].bit == 8) ? LoadMono8(tmp, sound[fileName].file) : LoadMono16(tmp, sound[fileName].file);
-			break;
-		case 2:
-			(sound[fileName].bit == 8) ? LoadStereo8(tmp, sound[fileName].file) : LoadStereo16(tmp, sound[fileName].file);
-			break;
-		default:
-			break;
-		}
+		load[sound[fileName].channel][sound[fileName].bit](tmp, sound[fileName].file);
 
 		sound[fileName].data->push_back(tmp);
-		++read;
 	}
 
 	fclose(sound[fileName].file);
