@@ -12,7 +12,6 @@ class Depth;
 class Fence;
 class RootMane;
 class PipeMane;
-class Compute;
 class Texture;
 
 class Union
@@ -65,9 +64,6 @@ private:
 
 	// パイプマネジャー
 	std::unique_ptr<PipeMane>pipe;
-
-	// コンピュート
-	std::unique_ptr<Compute>compute;
 
 	// テクスチャ
 	std::unique_ptr<Texture>tex;

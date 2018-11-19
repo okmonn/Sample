@@ -38,6 +38,9 @@ public:
 	// 読み込み
 	int Load(const std::string& fileName);
 
+	// 削除
+	void Delete(const std::string& fileName);
+
 	// チャネル数の取得
 	int GetChannel(const std::string& fileName) {
 		return sound[fileName].channel;
@@ -55,8 +58,10 @@ public:
 		return sound[fileName].data;
 	}
 
-	// 削除
-	void Delete(const std::string& fileName);
+	// 読み込み確認フラグの取得
+	bool GetFlag(const std::string& fileName) {
+		return flag[fileName];
+	}
 
 private:
 	// コンストラクタ
@@ -81,6 +86,9 @@ private:
 
 	// スレッド
 	std::vector<std::thread>th;
+
+	// 読み込み完了フラグ
+	std::map<std::string, bool>flag;
 
 	// 
 	std::map<int, std::map<int, std::function<void(std::vector<float>& tmp, FILE* file)>>>load;

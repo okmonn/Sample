@@ -1,6 +1,7 @@
 #include "Sound.h"
 #include "SoundLoader.h"
 #include "XAudio2.h"
+#include "VoiceCallback.h"
 #include <xaudio2.h>
 #include <ks.h>
 #include <ksmedia.h>
@@ -11,7 +12,7 @@
 #define Destroy(X) { if((X) != nullptr) (X)->DestroyVoice(); (X) = nullptr; }
 
 // バッファの最大数
-#define BUFFER_MAX 4
+#define BUFFER_MAX 3
 
 // スピーカー設定用配列
 const DWORD spk[] = {
@@ -30,6 +31,7 @@ Sound::Sound(std::weak_ptr<XAudio2>audio) :
 	loader(SoundLoader::Get()), audio(audio), voice(nullptr), 
 	index(0), loop(false), threadFlag(true)
 {
+	callback = std::make_shared<VoiceCallback>();
 }
 
 // デストラクタ
@@ -60,7 +62,7 @@ long Sound::CreateVoice(const std::string & fileName)
 	desc.Samples.wValidBitsPerSample = desc.Format.wBitsPerSample;
 	desc.SubFormat                   = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
 
-	auto hr = audio.lock()->Get()->CreateSourceVoice(&voice, (WAVEFORMATEX*)(&desc), 0, 1.0f, nullptr);
+	auto hr = audio.lock()->Get()->CreateSourceVoice(&voice, (WAVEFORMATEX*)(&desc), 0, 1.0f, &(*callback));
 	if (FAILED(hr))
 	{
 		OutputDebugString(_T("\nソースボイスの生成：失敗\n"));
@@ -77,6 +79,8 @@ void Sound::Load(const std::string & fileName)
 
 	CreateVoice(fileName);
 
+	name = fileName;
+
 	th = std::thread(&Sound::UpData, this);
 }
 
@@ -86,7 +90,8 @@ void Sound::UpData(void)
 	XAUDIO2_VOICE_STATE st{};
 	while (threadFlag)
 	{
-		if (data.lock()->size() <= BUFFER_MAX
+		if (data.lock()->size() <= BUFFER_MAX + 1
+			|| index >= data.lock()->size()
 			|| data.lock()->at(index).size() <= 0)
 		{
 			continue;
@@ -97,11 +102,6 @@ void Sound::UpData(void)
 		{
 			continue;
 		}
-
-		std::vector<float>real;
-		std::vector<float>imag;
-
-		//sound::FFT(data.lock()->at(index), real, imag, data.lock()->at(index).size());
 
 		XAUDIO2_BUFFER buf{};
 		buf.AudioBytes = sizeof(float) * data.lock()->at(index).size();
@@ -114,7 +114,7 @@ void Sound::UpData(void)
 			continue;
 		}
 
-		if (index + 1 >= data.lock()->size())
+		if (index + 1 >= data.lock()->size() && loader.GetFlag(name) == true)
 		{
 			if (loop == false)
 			{

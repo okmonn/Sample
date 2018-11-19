@@ -29,8 +29,8 @@ Application::Application(const unsigned int & width, const unsigned int & height
 	sound = std::make_unique<SoundMane>();
 	un    = std::make_unique<Union>();
 
-	sound->Load("ケムリ.wav", p);
-	sound->Play(p);
+	/*sound->Load("ケムリ.wav", p);
+	sound->Play(p);*/
 }
 
 // デストラクタ

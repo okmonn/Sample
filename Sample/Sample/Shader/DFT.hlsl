@@ -19,7 +19,7 @@
                                   "visibility = SHADER_VISIBILITY_ALL)"
 
 // 波形データ
-float wave[2940] : register(b0);
+float wave[980] : register(b0);
 
 // 実部
 RWStructuredBuffer<float> real : register(u0);
@@ -30,7 +30,7 @@ RWStructuredBuffer<float> real : register(u0);
 #define PI 3.14159265f
 
 // データサイズ
-#define SIZE 2940
+#define SIZE 1024
 
 // ハニング窓関数
 float Hanning(uint i)
@@ -42,15 +42,16 @@ float Hanning(uint i)
     0.5f - 0.5f * cos(2.0f * PI * (i + 0.5f) / SIZE);
 }
 
-[numthreads(size, size, 1)]
-void CS(uint3 id : SV_DispatchThreadID)
+[RootSignature(RS)]
+[numthreads(1024, 1, 1)]
+void CS(uint3 gID : SV_GroupID, uint3 gtID : SV_GroupThreadID, uint3 disID : SV_DispatchThreadID)
 {
-    float hanning = Hanning(id.x);
-    float tmp = wave[id.y] * hanning;
+    float hanning = Hanning(gtID.x);
 
-    float r = cos(2.0f * PI * id.x * id.y / SIZE);
-    float i = -sin(2.0f * PI * id.x * id.y / SIZE);
+    float tmp = wave[gtID.x] * hanning;
 
-    real[id.x] += r * tmp - i * 0.0f;
-    //imag[id.x] += r * 0.0f + i * tmp;
+    float r =  cos(2.0f * PI * gtID.x * gID.x / SIZE);
+    float i = -sin(2.0f * PI * gtID.x * gID.x / SIZE);
+
+    real[gtID.x] += r * tmp - i * 0.0f;
 }

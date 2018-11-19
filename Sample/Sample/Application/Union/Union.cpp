@@ -9,10 +9,12 @@
 #include "../Fence/Fence.h"
 #include "../Root/RootMane.h"
 #include "../Pipe/PipeMane.h"
-#include "../Compute/Compute.h"
 #include "../Texture/Texture.h"
 #include <d3d12.h>
 #include <dxgi1_6.h>
+#include "../DFT/DFT.h"
+
+DFT* dft;
 
 // クリア色
 const float color[] = {
@@ -41,22 +43,24 @@ Union::Union()
 	CreateRoot();
 	CreatePipe();
 
-	compute = std::make_unique<Compute>(dev, root->GetCompute(rootNo["compute"]), pipe->GetCompute(pipeNo["compute"]));
-
 	tex = std::make_unique<Texture>(dev, root->Get(rootNo["sample"]), pipe->Get(pipeNo["sample"]));
 	tex->Load("avicii.png", n);
 	tex->Load("sample.bmp", m);
+
+	dft = new DFT(dev, root->GetCompute(rootNo["compute"]), pipe->GetCompute(pipeNo["compute"]));
+	dft->Load("ケムリ.wav");
 }
 
 // デストラクタ
 Union::~Union()
 {
+	delete dft;
 }
 
 // 描画準備
 void Union::Set(void)
 {
-	compute->Execution();
+	dft->UpData();
 
 	com->GetList()->Reset(nullptr);
 	com->GetList()->SetViewport();
@@ -117,7 +121,7 @@ void Union::CreateRootCompute(const std::string & name, const std::tstring & fil
 void Union::CreateRoot(void)
 {
 	CreateRoot("sample", L"Shader/Texture.hlsl");
-	CreateRootCompute("compute", L"Shader/Test.hlsl");
+	CreateRootCompute("compute", L"Shader/DFT.hlsl");
 }
 
 // パイプラインの生成

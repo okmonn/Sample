@@ -184,6 +184,7 @@
     <ClInclude Include="Audio\SoundFunc.h" />
     <ClInclude Include="Audio\SoundLoader.h" />
     <ClInclude Include="Audio\SoundMane.h" />
+    <ClInclude Include="Audio\VoiceCallback.h" />
     <ClInclude Include="Audio\XAudio2.h" />
     <ClInclude Include="etc\Func.h" />
     <ClInclude Include="etc\tString.h" />

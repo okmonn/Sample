@@ -35,6 +35,7 @@ struct DATA {
 SoundLoader::SoundLoader() : 
 	threadFlag(true)
 {
+	flag.clear();
 	sound.clear();
 	th.resize(THREAD_MAX);
 
@@ -162,8 +163,10 @@ int SoundLoader::Load(const std::string & fileName)
 // 非同期読み込み
 void SoundLoader::LoadStream(const std::string & fileName)
 {
-	//1フレーム間の波形データ
-	std::vector<float>tmp((sound[fileName].sample * ((sound[fileName].bit / 8) * sound[fileName].channel)) / 60);
+	flag[fileName] = false;
+
+	//std::vector<float>tmp((sound[fileName].sample * ((sound[fileName].bit / 8) * sound[fileName].channel)) / 300);
+	std::vector<float>tmp(1024);
 	if (tmp.size() % 2 != 0)
 	{
 		tmp.resize(tmp.size() + 1);
@@ -177,6 +180,8 @@ void SoundLoader::LoadStream(const std::string & fileName)
 	}
 
 	fclose(sound[fileName].file);
+
+	flag[fileName] = true;
 }
 
 // 削除

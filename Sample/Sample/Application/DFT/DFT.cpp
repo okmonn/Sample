@@ -1,5 +1,8 @@
 #include "DFT.h"
 #include "../../Audio/SoundLoader.h"
+#include "../../Audio/XAudio2.h"
+#include "../../Audio/VoiceCallback.h"
+#include "../../Audio/Sound.h"
 #include "../DescriptorMane/DescriptorMane.h"
 #include "../Device/Device.h"
 #include "../Queue/Queue.h"
@@ -19,7 +22,7 @@
 // コンストラクタ
 DFT::DFT(std::weak_ptr<Device>dev, std::weak_ptr<RootCompute>root, std::weak_ptr<PipeCompute>pipe) : 
 	loader(SoundLoader::Get()), descMane(DescriptorMane::Get()), dev(dev), root(root), pipe(pipe), 
-	heapID(0), index(0)
+	heapID(0), index(0), waveIndex(0)
 {
 	com = std::make_unique<Command>(this->dev, D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_COMPUTE);
 	fence = std::make_unique<Fence>(dev, com->GetQueue());
@@ -32,6 +35,15 @@ DFT::DFT(std::weak_ptr<Device>dev, std::weak_ptr<RootCompute>root, std::weak_ptr
 // デストラクタ
 DFT::~DFT()
 {
+}
+
+// 波形読み込み
+void DFT::Load(const std::string & fileName)
+{
+	audio = std::make_unique<XAudio2>();
+	sound = std::make_unique<Sound>(audio);
+	sound->Load(fileName);
+	sound->Play(false);
 }
 
 // ヒープの生成
@@ -163,10 +175,12 @@ void DFT::Init(void)
 // 処理
 void DFT::UpData(void)
 {
-	memset(rsc["b0"].data, 0, DATA_MAX);
+	WaitForSingleObject(sound->GetCallback()->handle, INFINITE);
+
+	memcpy(rsc["b0"].data, SoundLoader::Get().GetData(sound->GetName())->at(waveIndex).data(), sizeof(float) * SoundLoader::Get().GetData(sound->GetName())->at(waveIndex).size());
 	memset(rsc["u0"].data, 0, DATA_MAX);
 
-	com->GetList()->Close();
+	com->GetList()->Reset(nullptr);
 
 	com->GetList()->GetList()->SetComputeRootSignature(root.lock()->Get());
 	com->GetList()->SetPipe(pipe.lock()->Get());
@@ -179,11 +193,20 @@ void DFT::UpData(void)
 	handle.ptr += dev.lock()->GetDev()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * rsc["u0"].id;
 	com->GetList()->GetList()->SetComputeRootDescriptorTable(1, handle);
 
-	com->GetList()->GetList()->Dispatch(1, 1, 1);
+	com->GetList()->GetList()->Dispatch(1024, 1, 1);
 
 	com->GetList()->Close();
 	ID3D12CommandList* list = com->GetList()->GetList();
 	com->GetQueue()->Execute(&list, 1);
 
 	fence->Wait();
+
+	std::vector<float>wave(rsc["u0"].data, rsc["u0"].data + SoundLoader::Get().GetData(sound->GetName())->at(waveIndex).size());
+
+	if (SoundLoader::Get().GetFlag(sound->GetName()) == false)
+	{
+		return;
+	}
+
+	waveIndex = (waveIndex + 1 >= SoundLoader::Get().GetData(sound->GetName())->size()) ? 0 : ++waveIndex;
 }

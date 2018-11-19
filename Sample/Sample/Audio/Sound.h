@@ -8,6 +8,7 @@
 struct IXAudio2SourceVoice;
 class SoundLoader;
 class XAudio2;
+class VoiceCallback;
 
 class Sound
 {
@@ -29,6 +30,15 @@ public:
 	// リセット
 	void Reset(void);
 
+	// 読み込みファイル名の取得
+	std::string GetName(void) const {
+		return name;
+	}
+	// コールバックの取得
+	std::shared_ptr<VoiceCallback>GetCallback(void) const {
+		return callback;
+	}
+
 private:
 	// ソースボイスの生成
 	long CreateVoice(const std::string& fileName);
@@ -45,6 +55,12 @@ private:
 
 	// ソースボイス
 	IXAudio2SourceVoice* voice;
+
+	// コールバック
+	std::shared_ptr<VoiceCallback>callback;
+
+	// 楽曲名
+	std::string name;
 
 	// バッファ配列番号
 	unsigned int index;

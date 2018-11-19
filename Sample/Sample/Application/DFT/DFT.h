@@ -5,6 +5,8 @@
 #include <memory>
 
 class SoundLoader;
+class XAudio2;
+class Sound;
 class DescriptorMane;
 class Device;
 class Command;
@@ -23,6 +25,9 @@ public:
 	DFT(std::weak_ptr<Device>dev, std::weak_ptr<RootCompute>root, std::weak_ptr<PipeCompute>pipe);
 	// デストラクタ
 	~DFT();
+
+	// 波形読み込み
+	void Load(const std::string& fileName);
 
 	// 処理
 	void UpData(void);
@@ -77,15 +82,21 @@ private:
 	// コンピュートパイプライン
 	std::weak_ptr<PipeCompute>pipe;
 
+	// XAudio2
+	std::shared_ptr<XAudio2>audio;
+
+	// サウンド
+	std::unique_ptr<Sound>sound;
+
 	// ヒープID
 	int heapID;
 
 	// リソース番号
 	int index;
 
+	// 波形配列番号
+	int waveIndex;
+
 	// リソースID
 	std::map<std::string, Info>rsc;
-
-	// 
-	std::weak_ptr<std::vector<std::vector<float>>>data;
 };
