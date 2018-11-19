@@ -48,7 +48,7 @@ Union::Union()
 	tex->Load("sample.bmp", m);
 
 	dft = new DFT(dev, root->GetCompute(rootNo["compute"]), pipe->GetCompute(pipeNo["compute"]));
-	dft->Load("ケムリ.wav");
+	dft->Load("sample0.wav");
 }
 
 // デストラクタ

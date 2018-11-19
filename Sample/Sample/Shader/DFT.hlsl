@@ -19,7 +19,7 @@
                                   "visibility = SHADER_VISIBILITY_ALL)"
 
 // 波形データ
-float wave[980] : register(b0);
+float wave[1764] : register(b0);
 
 // 実部
 RWStructuredBuffer<float> real : register(u0);
@@ -30,7 +30,7 @@ RWStructuredBuffer<float> real : register(u0);
 #define PI 3.14159265f
 
 // データサイズ
-#define SIZE 1024
+#define SIZE 1764
 
 // ハニング窓関数
 float Hanning(uint i)
@@ -43,15 +43,22 @@ float Hanning(uint i)
 }
 
 [RootSignature(RS)]
-[numthreads(1024, 1, 1)]
+[numthreads(1, 1, 1)]
 void CS(uint3 gID : SV_GroupID, uint3 gtID : SV_GroupThreadID, uint3 disID : SV_DispatchThreadID)
 {
-    float hanning = Hanning(gtID.x);
+    float hanning = Hanning(gID.x);
 
-    float tmp = wave[gtID.x] * hanning;
+    float tmp = wave[gID.x] * hanning;
 
-    float r =  cos(2.0f * PI * gtID.x * gID.x / SIZE);
-    float i = -sin(2.0f * PI * gtID.x * gID.x / SIZE);
+    float r = 0;
+    float i = 0;
+    for (int n = 0; n < SIZE; ++n)
+    {
+        r =  cos(2.0f * PI * gID.x * n / SIZE);
+        i = -sin(2.0f * PI * gID.x * n / SIZE);
 
-    real[gtID.x] += r * tmp - i * 0.0f;
+        real[gID.x] += r * tmp - i * 0.0f;
+    }
+
+    GroupMemoryBarrierWithGroupSync();
 }

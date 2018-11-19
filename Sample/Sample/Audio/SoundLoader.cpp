@@ -165,8 +165,7 @@ void SoundLoader::LoadStream(const std::string & fileName)
 {
 	flag[fileName] = false;
 
-	//std::vector<float>tmp((sound[fileName].sample * ((sound[fileName].bit / 8) * sound[fileName].channel)) / 300);
-	std::vector<float>tmp(1024);
+	std::vector<float>tmp((sound[fileName].sample * ((sound[fileName].bit / 8) * sound[fileName].channel)) / 100);
 	if (tmp.size() % 2 != 0)
 	{
 		tmp.resize(tmp.size() + 1);
@@ -176,7 +175,7 @@ void SoundLoader::LoadStream(const std::string & fileName)
 	{
 		load[sound[fileName].channel][sound[fileName].bit](tmp, sound[fileName].file);
 
-		sound[fileName].data->push_back(tmp);
+		sound[fileName].data->emplace_back(tmp);
 	}
 
 	fclose(sound[fileName].file);

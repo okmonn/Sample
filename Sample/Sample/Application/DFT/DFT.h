@@ -95,7 +95,7 @@ private:
 	int index;
 
 	// 波形配列番号
-	int waveIndex;
+	unsigned int waveIndex;
 
 	// リソースID
 	std::map<std::string, Info>rsc;

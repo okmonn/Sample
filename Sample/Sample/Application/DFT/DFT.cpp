@@ -178,7 +178,7 @@ void DFT::UpData(void)
 	WaitForSingleObject(sound->GetCallback()->handle, INFINITE);
 
 	memcpy(rsc["b0"].data, SoundLoader::Get().GetData(sound->GetName())->at(waveIndex).data(), sizeof(float) * SoundLoader::Get().GetData(sound->GetName())->at(waveIndex).size());
-	memset(rsc["u0"].data, 0, DATA_MAX);
+	memset(rsc["u0"].data, 0, sizeof(float) * SoundLoader::Get().GetData(sound->GetName())->at(waveIndex).size());
 
 	com->GetList()->Reset(nullptr);
 
@@ -193,7 +193,7 @@ void DFT::UpData(void)
 	handle.ptr += dev.lock()->GetDev()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * rsc["u0"].id;
 	com->GetList()->GetList()->SetComputeRootDescriptorTable(1, handle);
 
-	com->GetList()->GetList()->Dispatch(1024, 1, 1);
+	com->GetList()->GetList()->Dispatch(1740, 1, 1);
 
 	com->GetList()->Close();
 	ID3D12CommandList* list = com->GetList()->GetList();
@@ -202,11 +202,6 @@ void DFT::UpData(void)
 	fence->Wait();
 
 	std::vector<float>wave(rsc["u0"].data, rsc["u0"].data + SoundLoader::Get().GetData(sound->GetName())->at(waveIndex).size());
-
-	if (SoundLoader::Get().GetFlag(sound->GetName()) == false)
-	{
-		return;
-	}
 
 	waveIndex = (waveIndex + 1 >= SoundLoader::Get().GetData(sound->GetName())->size()) ? 0 : ++waveIndex;
 }
