@@ -4,68 +4,86 @@
 #include <vector>
 #include <memory>
 
-class SoundLoader;
+class DescriptorMane;
 class XAudio2;
 class Sound;
-class DescriptorMane;
 class Device;
+class List;
 class Command;
 class Fence;
+class Root;
 class RootCompute;
+class Pipe;
 class PipeCompute;
 
 class DFT
 {
-	struct Info {
+	struct Data {
 		int id;
 		float* data;
 	};
+
 public:
 	// コンストラクタ
-	DFT(std::weak_ptr<Device>dev, std::weak_ptr<RootCompute>root, std::weak_ptr<PipeCompute>pipe);
+	DFT(std::weak_ptr<Device>dev);
 	// デストラクタ
 	~DFT();
 
-	// 波形読み込み
+	// コンピュート用ルートシグネチャ・パイプラインのセット
+	void SetCompute(std::weak_ptr<RootCompute>root, std::weak_ptr<PipeCompute>pipe);
+
+	// グラフィックス用ルートシグネチャ・パイプラインのセット
+	void SetGraphics(std::weak_ptr<Root>root, std::weak_ptr<Pipe>pipe);
+
+	// 音声読み込み
 	void Load(const std::string& fileName);
 
-	// 処理
-	void UpData(void);
+	// 実行
+	void Execution(void);
+
+	// 描画
+	void Draw(std::weak_ptr<List>list);
 
 private:
 	// ヒープの生成
 	long CreateHeap(void);
 
 	// CBVリソースの生成
-	long CreateCbvRsc(const std::string& name);
-
-	// CBVビューの生成
-	void CreateCbvView(const std::string& name);
+	long CreateCbvRsc(const std::string& name, const unsigned int& size);
 
 	// UAVリソースの生成
-	long CreateUavRsc(const std::string& name);
+	long CreateUavRsc(const std::string& name, const unsigned int& size);
 
-	// UAVビューの生成
-	void CreateUavView(const std::string& name);
+	// CBVの生成
+	void CreateCbv(const std::string& name, const unsigned int& size);
 
-	// リソースのマップ
+	// UAVの生成
+	void CreateUav(const std::string& name, const unsigned int& stride, const unsigned int& num);
+
+	// マップ
 	long Map(const std::string& name);
 
 	// CBVの生成
-	void CreateCbv(const std::string& name);
+	void Cbv(const std::string& name, const unsigned int& size);
 
 	// UAVの生成
-	void CreateUav(const std::string& name);
+	void Uav(const std::string& name, const unsigned int& stride, const unsigned int& num);
+
+	// 頂点リソースの生成
+	long CreateVertex(void);
 
 	// 初期化
 	void Init(void);
 
 
-	// サウンドローダー
-	SoundLoader& loader;
-
-	// ヒープ・リソースマネージャー
+	// ディスクリプタマネージャー
 	DescriptorMane& descMane;
+
+	// XAudio2
+	std::shared_ptr<XAudio2>audio;
+
+	// サウンド
+	std::unique_ptr<Sound>sound;
 
 	// デバイス
 	std::weak_ptr<Device>dev;
@@ -74,29 +92,32 @@ private:
 	std::unique_ptr<Command>com;
 
 	// フェンス
-	std::unique_ptr<Fence>fence;
+	std::unique_ptr<Fence>fen;
+
+	// ルートシグネチャ・
+	std::weak_ptr<Root>root;
 
 	// コンピュートルートシグネチャ
-	std::weak_ptr<RootCompute>root;
+	std::weak_ptr<RootCompute>cRoot;
+
+	// パイプライン
+	std::weak_ptr<Pipe>pipe;
 
 	// コンピュートパイプライン
-	std::weak_ptr<PipeCompute>pipe;
-
-	// XAudio2
-	std::shared_ptr<XAudio2>audio;
-
-	// サウンド
-	std::unique_ptr<Sound>sound;
-
-	// ヒープID
-	int heapID;
+	std::weak_ptr<PipeCompute>cPipe;
 
 	// リソース番号
-	int index;
+	int nomber;
 
 	// 波形配列番号
-	unsigned int waveIndex;
+	unsigned int index;
+
+	// ヒープID
+	int heap;
 
 	// リソースID
-	std::map<std::string, Info>rsc;
+	std::map<std::string, Data>rsc;
+
+	// 波形変換データ
+	std::vector<float>wave;
 };

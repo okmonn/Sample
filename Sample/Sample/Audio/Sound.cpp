@@ -29,7 +29,7 @@ const DWORD spk[] = {
 // コンストラクタ
 Sound::Sound(std::weak_ptr<XAudio2>audio) :
 	loader(SoundLoader::Get()), audio(audio), voice(nullptr), 
-	index(0), loop(false), threadFlag(true)
+	index(0), end(false), loop(false), threadFlag(true)
 {
 	callback = std::make_shared<VoiceCallback>();
 }
@@ -121,6 +121,7 @@ void Sound::UpData(void)
 				Stop();
 			}
 			index = 0;
+			end = true;
 		}
 		else
 		{
@@ -140,6 +141,7 @@ long Sound::Play(const bool & loop)
 	}
 
 	this->loop = loop;
+	end = false;
 
 	return hr;
 }

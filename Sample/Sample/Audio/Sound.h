@@ -34,6 +34,10 @@ public:
 	std::string GetName(void) const {
 		return name;
 	}
+	// 終了フラグの取得
+	bool GetEnd(void) const {
+		return end;
+	}
 	// コールバックの取得
 	std::shared_ptr<VoiceCallback>GetCallback(void) const {
 		return callback;
@@ -64,6 +68,9 @@ private:
 
 	// バッファ配列番号
 	unsigned int index;
+
+	// 終了フラグ
+	bool end;
 
 	// ループフラグ
 	bool loop;

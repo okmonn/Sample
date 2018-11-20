@@ -314,11 +314,11 @@
     <ClInclude Include="Audio\SoundFunc.h">
       <Filter>Audio</Filter>
     </ClInclude>
-    <ClInclude Include="Application\DFT\DFT.h">
-      <Filter>Application\DFT</Filter>
-    </ClInclude>
     <ClInclude Include="Audio\VoiceCallback.h">
       <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\DFT\DFT.h">
+      <Filter>Application\DFT</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -328,7 +328,10 @@
     <FxCompile Include="Shader\Test.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\DFT.hlsl">
+    <FxCompile Include="Draw.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\Draw.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>

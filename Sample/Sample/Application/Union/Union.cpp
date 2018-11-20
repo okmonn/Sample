@@ -10,11 +10,9 @@
 #include "../Root/RootMane.h"
 #include "../Pipe/PipeMane.h"
 #include "../Texture/Texture.h"
+#include "../DFT/DFT.h"
 #include <d3d12.h>
 #include <dxgi1_6.h>
-#include "../DFT/DFT.h"
-
-DFT* dft;
 
 // クリア色
 const float color[] = {
@@ -23,8 +21,7 @@ const float color[] = {
 	1.0f,
 	1.0f
 };
-int n = 0;
-int m = 0;
+
 // コンストラクタ
 Union::Union()
 {
@@ -44,24 +41,20 @@ Union::Union()
 	CreatePipe();
 
 	tex = std::make_unique<Texture>(dev, root->Get(rootNo["sample"]), pipe->Get(pipeNo["sample"]));
-	tex->Load("avicii.png", n);
-	tex->Load("sample.bmp", m);
 
-	dft = new DFT(dev, root->GetCompute(rootNo["compute"]), pipe->GetCompute(pipeNo["compute"]));
-	dft->Load("sample0.wav");
+	dft = std::make_unique<DFT>(dev);
+	dft->SetCompute(root->GetCompute(rootNo["compute"]), pipe->GetCompute(pipeNo["compute"]));
+	dft->SetGraphics(root->Get(rootNo["draw"]), pipe->Get(pipeNo["draw"]));
 }
 
 // デストラクタ
 Union::~Union()
 {
-	delete dft;
 }
 
 // 描画準備
 void Union::Set(void)
 {
-	dft->UpData();
-
 	com->GetList()->Reset(nullptr);
 	com->GetList()->SetViewport();
 	com->GetList()->SetScissor();
@@ -72,9 +65,6 @@ void Union::Set(void)
 		ren->GetRsc(swap->Get()->GetCurrentBackBufferIndex()));
 
 	ren->SetRender(com->GetList()->GetList(), dep->GetHeap(), *color);
-
-	tex->Draw(com->GetList(), m, { 0.0f, 0.0f }, {100.0f, 100.0f}, { 0.0f, 0.0f }, { 256.0f, 256.0f });
-	tex->Draw(com->GetList(), n, { 0.0f, 0.0f }, {640.0f, 480.0f},  { 0.0f, 0.0f }, { 200.0f, 200.0f });
 }
 
 // 描画実行
@@ -122,6 +112,7 @@ void Union::CreateRoot(void)
 {
 	CreateRoot("sample", L"Shader/Texture.hlsl");
 	CreateRootCompute("compute", L"Shader/DFT.hlsl");
+	CreateRoot("draw", L"Shader/Draw.hlsl");
 }
 
 // パイプラインの生成
@@ -154,5 +145,6 @@ void Union::CreatePipe(void)
 {
 	CreatePipe("sample", "sample", D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, { 0, 2 }, false);
 	CreatePipeCompute("compute", "compute");
+	CreatePipe("draw", "draw", D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT, { 0 }, false);
 }
 

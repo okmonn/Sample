@@ -13,6 +13,7 @@ class Fence;
 class RootMane;
 class PipeMane;
 class Texture;
+class DFT;
 
 class Union
 {
@@ -67,6 +68,9 @@ private:
 
 	// テクスチャ
 	std::unique_ptr<Texture>tex;
+
+	// DFT
+	std::unique_ptr<DFT>dft;
 
 	// ルートシグネチャID
 	std::map<std::string, int>rootNo;

@@ -22,7 +22,7 @@
 float wave[1764] : register(b0);
 
 // ŽÀ•”
-RWStructuredBuffer<float> real : register(u0);
+RWStructuredBuffer<float3> real : register(u0);
 // ‹••”
 //RWStructuredBuffer<float> imag : register(u1);
 
@@ -57,8 +57,11 @@ void CS(uint3 gID : SV_GroupID, uint3 gtID : SV_GroupThreadID, uint3 disID : SV_
         r =  cos(2.0f * PI * gID.x * n / SIZE);
         i = -sin(2.0f * PI * gID.x * n / SIZE);
 
-        real[gID.x] += r * tmp - i * 0.0f;
+        real[gID.x].y += r * tmp - i * 0.0f;
     }
+
+    real[gID.x].x = 
+    real[gID.x].z = 0.0f;
 
     GroupMemoryBarrierWithGroupSync();
 }
