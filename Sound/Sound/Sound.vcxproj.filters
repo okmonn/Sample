@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{79e9e3ea-57db-4be0-acb5-af2f77f6d5ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound\XAudio2">
+      <UniqueIdentifier>{69146221-7969-4695-a503-6eaf40fae497}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound\SoundLoader">
+      <UniqueIdentifier>{b1910014-5f9e-4342-9d27-9fa2afc5e612}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound\SoundFunc">
+      <UniqueIdentifier>{31fac818-51ac-4869-aa2f-5efb1550fb86}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\XAudio2\XAudio2.cpp">
+      <Filter>Sound\XAudio2</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundLoader\SoundLoader.cpp">
+      <Filter>Sound\SoundLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundFunc\SoundFunc.cpp">
+      <Filter>Sound\SoundFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\Sound.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sound\Destroy.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\XAudio2\XAudio2.h">
+      <Filter>Sound\XAudio2</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundLoader\SoundLoader.h">
+      <Filter>Sound\SoundLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundFunc\SoundFunc.h">
+      <Filter>Sound\SoundFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\Sound.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
