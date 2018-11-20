@@ -6,8 +6,7 @@
 #pragma comment (lib, "d3dcompiler.lib")
 
 // コンストラクタ
-RootMane::RootMane(std::weak_ptr<Device>dev) : 
-	dev(dev)
+RootMane::RootMane()
 {
 	root.clear();
 	compute.clear();
@@ -19,13 +18,13 @@ RootMane::~RootMane()
 }
 
 // ルートシグネチャクラスの生成
-void RootMane::CreateRoot(int& i, const std::tstring & fileName)
+void RootMane::CreateRoot(int& i, std::weak_ptr<Device>dev, const std::tstring & fileName)
 {
 	root[&i] = std::make_shared<Root>(dev, fileName);
 }
 
 // ルートシグネチャコンピュートクラスの生成
-void RootMane::CreateRootCompute(int & i, const std::tstring & fileName)
+void RootMane::CreateRootCompute(int & i, std::weak_ptr<Device>dev, const std::tstring & fileName)
 {
 	compute[&i] = std::make_shared<RootCompute>(dev, fileName);
 }

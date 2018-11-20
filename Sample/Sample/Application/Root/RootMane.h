@@ -10,16 +10,20 @@ class RootCompute;
 class RootMane
 {
 public:
-	// コンストラクタ
-	RootMane(std::weak_ptr<Device>dev);
 	// デストラクタ
 	~RootMane();
 
+	// インスタンス変数の取得
+	static RootMane& Get(void) {
+		static RootMane instance;
+		return instance;
+	}
+
 	// ルートシグネチャクラスの生成
-	void CreateRoot(int& i, const std::tstring& fileName);
+	void CreateRoot(int& i, std::weak_ptr<Device>dev, const std::tstring& fileName);
 
 	// ルートシグネチャコンピュートクラスの生成
-	void CreateRootCompute(int& i, const std::tstring& fileName);
+	void CreateRootCompute(int& i, std::weak_ptr<Device>dev, const std::tstring& fileName);
 
 	// ルートシグネチャクラスの取得
 	std::shared_ptr<Root>Get(int& i) {
@@ -31,8 +35,12 @@ public:
 	}
 
 private:
-	// デバイス
-	std::weak_ptr<Device>dev;
+	// コンストラクタ
+	RootMane();
+	RootMane(const RootMane&) {
+	}
+	void operator=(const RootMane&) {
+	}
 
 	// ルートシグネチャ
 	std::map<int*, std::shared_ptr<Root>>root;

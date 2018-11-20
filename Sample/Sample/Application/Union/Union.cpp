@@ -16,14 +16,15 @@
 
 // クリア色
 const float color[] = {
-	1.0f,
-	1.0f,
-	1.0f,
-	1.0f
+	0.0f,
+	0.0f,
+	0.0f,
+	0.0f
 };
 
 // コンストラクタ
-Union::Union()
+Union::Union() : 
+	root(RootMane::Get()), pipe(PipeMane::Get())
 {
 	rootNo.clear();
 	pipeNo.clear();
@@ -34,17 +35,16 @@ Union::Union()
 	ren  = std::make_unique<Render>(dev, swap);
 	dep  = std::make_unique<Depth>(dev);
 	fen  = std::make_unique<Fence>(dev, com->GetQueue());
-	root = std::make_unique<RootMane>(dev);
-	pipe = std::make_unique<PipeMane>(dev, swap);
 
 	CreateRoot();
 	CreatePipe();
 
-	tex = std::make_unique<Texture>(dev, root->Get(rootNo["sample"]), pipe->Get(pipeNo["sample"]));
+	tex = std::make_unique<Texture>(dev, root.Get(rootNo["sample"]), pipe.Get(pipeNo["sample"]));
 
 	dft = std::make_unique<DFT>(dev);
-	dft->SetCompute(root->GetCompute(rootNo["compute"]), pipe->GetCompute(pipeNo["compute"]));
-	dft->SetGraphics(root->Get(rootNo["draw"]), pipe->Get(pipeNo["draw"]));
+	dft->SetCompute(root.GetCompute(rootNo["compute"]), pipe.GetCompute(pipeNo["compute"]));
+	dft->SetGraphics(root.Get(rootNo["draw"]), pipe.Get(pipeNo["draw"]));
+	dft->Load("animal.wav");
 }
 
 // デストラクタ
@@ -55,6 +55,8 @@ Union::~Union()
 // 描画準備
 void Union::Set(void)
 {
+	dft->Execution();
+
 	com->GetList()->Reset(nullptr);
 	com->GetList()->SetViewport();
 	com->GetList()->SetScissor();
@@ -65,6 +67,8 @@ void Union::Set(void)
 		ren->GetRsc(swap->Get()->GetCurrentBackBufferIndex()));
 
 	ren->SetRender(com->GetList()->GetList(), dep->GetHeap(), *color);
+
+	dft->Draw(com->GetList());
 }
 
 // 描画実行
@@ -92,7 +96,7 @@ void Union::CreateRoot(const std::string & name, const std::tstring & fileName)
 	}
 
 	rootNo[name] = 0;
-	root->CreateRoot(rootNo[name], fileName);
+	root.CreateRoot(rootNo[name], dev, fileName);
 }
 
 // ルートシグネチャの生成
@@ -104,7 +108,7 @@ void Union::CreateRootCompute(const std::string & name, const std::tstring & fil
 	}
 
 	rootNo[name] = 0;
-	root->CreateRootCompute(rootNo[name], fileName);
+	root.CreateRootCompute(rootNo[name], dev, fileName);
 }
 
 // ルートシグネチャの生成
@@ -125,7 +129,7 @@ void Union::CreatePipe(const std::string & name, const std::string & rootName, c
 	}
 
 	pipeNo[name] = 0;
-	pipe->CreatePipe(pipeNo[name], root->Get(rootNo[rootName]), type, index, depth);
+	pipe.CreatePipe(pipeNo[name], dev, swap, root.Get(rootNo[rootName]), type, index, depth);
 }
 
 // パイプラインの生成
@@ -137,7 +141,7 @@ void Union::CreatePipeCompute(const std::string & name, const std::string & root
 	}
 
 	pipeNo[name] = 0;
-	pipe->CreatePipeCompute(pipeNo[name], root->GetCompute(rootNo[rootName]));
+	pipe.CreatePipeCompute(pipeNo[name], dev, root.GetCompute(rootNo[rootName]));
 }
 
 // パイプラインの生成
@@ -145,6 +149,6 @@ void Union::CreatePipe(void)
 {
 	CreatePipe("sample", "sample", D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, { 0, 2 }, false);
 	CreatePipeCompute("compute", "compute");
-	CreatePipe("draw", "draw", D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT, { 0 }, false);
+	CreatePipe("draw", "draw", D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE, { 0 }, false);
 }
 

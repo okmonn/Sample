@@ -29,8 +29,7 @@ const D3D12_INPUT_ELEMENT_DESC inputs[] = {
 
 
 // コンストラクタ
-PipeMane::PipeMane(std::weak_ptr<Device>dev, std::weak_ptr<Swap>swap) : 
-	dev(dev), swap(swap)
+PipeMane::PipeMane()
 {
 	pipe.clear();
 	compute.clear();
@@ -42,7 +41,7 @@ PipeMane::~PipeMane()
 }
 
 // パイプラインの生成
-void PipeMane::CreatePipe(int & i, std::weak_ptr<Root> root, const D3D12_PRIMITIVE_TOPOLOGY_TYPE & type, const std::initializer_list<int> & index, const bool & depth)
+void PipeMane::CreatePipe(int & i, std::weak_ptr<Device>dev, std::weak_ptr<Swap>swap, std::weak_ptr<Root> root, const D3D12_PRIMITIVE_TOPOLOGY_TYPE & type, const std::initializer_list<int> & index, const bool & depth)
 {
 	std::vector< D3D12_INPUT_ELEMENT_DESC>input;
 	for (auto& idx : index)
@@ -55,7 +54,7 @@ void PipeMane::CreatePipe(int & i, std::weak_ptr<Root> root, const D3D12_PRIMITI
 }
 
 // パイプラインコンピュートクラスの生成
-void PipeMane::CreatePipeCompute(int & i, std::weak_ptr<RootCompute> root)
+void PipeMane::CreatePipeCompute(int & i, std::weak_ptr<Device>dev, std::weak_ptr<RootCompute> root)
 {
 	compute[&i] = std::make_shared<PipeCompute>(dev, root);
 }

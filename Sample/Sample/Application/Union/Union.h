@@ -61,10 +61,10 @@ private:
 	std::unique_ptr<Fence>fen;
 
 	// ルートマネジャー
-	std::unique_ptr<RootMane>root;
+	RootMane& root;
 
 	// パイプマネジャー
-	std::unique_ptr<PipeMane>pipe;
+	PipeMane& pipe;
 
 	// テクスチャ
 	std::unique_ptr<Texture>tex;

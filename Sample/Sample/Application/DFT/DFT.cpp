@@ -189,7 +189,7 @@ long DFT::CreateVertex(void)
 	desc.Layout           = D3D12_TEXTURE_LAYOUT::D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	desc.MipLevels        = 1;
 	desc.SampleDesc       = { 1, 0 };
-	desc.Width            = sizeof(dft::Vertex) * DATA_MAX;
+	desc.Width            = sizeof(dft::Vertex) * DATA_MAX * 2;
 
 	return descMane.CreateRsc(dev, rsc["vertex"].id, prop, desc);
 }
@@ -202,11 +202,12 @@ void DFT::Init(void)
 
 	CreateVertex();
 	Map("vertex");
-	dft::vertex.resize(DATA_MAX);
+	dft::vertex.resize(DATA_MAX * 2);
 
-	for (unsigned int i = 0; i < dft::vertex.size(); ++i)
+	for (unsigned int i = 0; i < dft::vertex.size(); i += 2)
 	{
-		dft::vertex[i].pos.x = i * (DATA_MAX / 2) - 1.0f;
+		dft::vertex[i].pos.x     = i * (2.0f / (float)DATA_MAX) - 1.0f;
+		dft::vertex[i + 1].pos.x = i * (2.0f / (float)DATA_MAX) - 1.0f;
 	}
 }
 
@@ -275,12 +276,11 @@ void DFT::Draw(std::weak_ptr<List> list)
 {
 	for (unsigned int i = 0; i < wave.size(); ++i)
 	{
-		dft::vertex[i].pos.y = wave[i];
+		dft::vertex[i * 2].pos.y     = 0.0f;
+		dft::vertex[i * 2 + 1].pos.y = wave[i] * (32768.0f / 2);
 	}
 
 	memcpy(rsc["vertex"].data, dft::vertex.data(), sizeof(dft::Vertex) * dft::vertex.size());
-
-	list.lock()->Reset(nullptr);
 
 	list.lock()->SetRoot(root.lock()->Get());
 	list.lock()->SetPipe(pipe.lock()->Get());
@@ -291,7 +291,7 @@ void DFT::Draw(std::weak_ptr<List> list)
 	view.StrideInBytes  = sizeof(dft::Vertex);
 	list.lock()->GetList()->IASetVertexBuffers(0, 1, &view);
 
-	list.lock()->GetList()->IASetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+	list.lock()->GetList()->IASetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	list.lock()->GetList()->DrawInstanced(DATA_MAX, 1, 0, 0);
 }

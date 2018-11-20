@@ -88,6 +88,9 @@
     <Filter Include="Application\DFT">
       <UniqueIdentifier>{b4d886ee-8cd3-4115-956e-bd891f4263aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Application\SoundEffect">
+      <UniqueIdentifier>{9c745782-afcb-4ffb-b5a8-4ba65444c08d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -194,6 +197,9 @@
     </ClCompile>
     <ClCompile Include="Application\DFT\DFT.cpp">
       <Filter>Application\DFT</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\SoundEffect\Delay.cpp">
+      <Filter>Application\SoundEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -320,6 +326,9 @@
     <ClInclude Include="Application\DFT\DFT.h">
       <Filter>Application\DFT</Filter>
     </ClInclude>
+    <ClInclude Include="Application\SoundEffect\Delay.h">
+      <Filter>Application\SoundEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\Texture.hlsl">
@@ -328,10 +337,13 @@
     <FxCompile Include="Shader\Test.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Draw.hlsl">
+    <FxCompile Include="Shader\DFT.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="Shader\Draw.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\Delay.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>

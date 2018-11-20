@@ -18,46 +18,39 @@
                                   "space = 0, "\
                                   "visibility = SHADER_VISIBILITY_ALL)"
 
-// 波形データ
-float wave[1764] : register(b0);
-
-// 実部
-RWStructuredBuffer<float3> real : register(u0);
-// 虚部
-//RWStructuredBuffer<float> imag : register(u1);
-
-// 円周率
-#define PI 3.14159265f
-
-// データサイズ
-#define SIZE 1764
-
-// ハニング窓関数
-float Hanning(uint i)
+// パラメータ
+cbuffer Param : register(b0)
 {
-    return (SIZE % 2 == 0) ?
-    //偶数
-    0.5f - 0.5f * cos(2.0f * PI * i / SIZE) :
-    //奇数
-    0.5f - 0.5f * cos(2.0f * PI * (i + 0.5f) / SIZE);
-}
+    //減衰率
+    float attenuation;
+    //遅延時間
+    float time;
+    //ループ回数
+    int loop;
+    //サンプリング周波数
+    int sample;
+};
+
+// 適応データ
+RWStructuredBuffer<float> real : register(u0);
 
 [RootSignature(RS)]
 [numthreads(1, 1, 1)]
 void CS(uint3 gID : SV_GroupID, uint3 gtID : SV_GroupThreadID, uint3 disID : SV_DispatchThreadID)
 {
-    float hanning = Hanning(gID.x);
+   //バックアップ
+    float back = real[gID.x];
 
-    float tmp = wave[gID.x] * hanning;
-
-    float r = 0;
-    float i = 0;
-    for (int n = 0; n < SIZE; ++n)
+    for (int n = 1; n <= loop; ++n)
     {
-        r =  cos(2.0f * PI * gID.x * n / SIZE);
-        i = -sin(2.0f * PI * gID.x * n / SIZE);
+        float m = gID.x - n * (sample * time);
+        real[gID.x] += (m >= 0.0f) ? pow(2.0f, n) * back : 0.0f;
+    }
 
-        real[gID.x].y += r * tmp - i * 0.0f;
+    //クリッピング
+    if (real[gID.x] > 1.0f)
+    {
+        real[gID.x] = 1.0f;
     }
 
     GroupMemoryBarrierWithGroupSync();
