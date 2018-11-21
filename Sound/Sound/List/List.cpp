@@ -36,7 +36,17 @@ long List::CreateList(const D3D12_COMMAND_LIST_TYPE & type)
 	if (FAILED(hr))
 	{
 		OutputDebugString(_T("\nリストの生成：失敗\n"));
+		return hr;
 	}
 
+	list->Close();
+
 	return hr;
+}
+
+// リセット
+void List::Reset(void)
+{
+	allo->Reset();
+	list->Reset(allo, nullptr);
 }

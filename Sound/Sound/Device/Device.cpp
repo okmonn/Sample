@@ -1,6 +1,8 @@
 #include "Device.h"
 #include "../Release.h"
 
+#pragma comment(lib, "d3d12.lib")
+
 const D3D_FEATURE_LEVEL levels[]=
 {
 	D3D_FEATURE_LEVEL_12_1,

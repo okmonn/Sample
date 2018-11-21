@@ -3,7 +3,7 @@
 #include <memory>
 
 struct ID3D10Blob;
-typedef ID3D10Blob ID3Blob;
+typedef ID3D10Blob ID3DBlob;
 struct ID3D12RootSignature;
 class Device;
 
@@ -45,5 +45,5 @@ private:
 	ID3DBlob* sig;
 
 	// シェーダー情報
-	ID3Blob* shader;
+	ID3DBlob* shader;
 };

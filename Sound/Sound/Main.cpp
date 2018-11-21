@@ -3,7 +3,7 @@
 int main()
 {
 	Sound s;
-	s.Load("sample0.wav");
+	s.Load("sample.wav");
 	s.Play();
 
 	while (true)

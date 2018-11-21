@@ -14,6 +14,9 @@ public:
 	// デストラクタ
 	~List();
 
+	// リセット
+	void Reset(void);
+
 	// アロケータの取得
 	ID3D12CommandAllocator* GetAllo(void) const {
 		return allo;

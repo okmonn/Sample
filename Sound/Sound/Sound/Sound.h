@@ -31,6 +31,11 @@ public:
 	// コールバックハンドルの取得
 	void* GetHandle(void) const;
 
+	// 再生終了フラグの取得
+	bool GetEnd(void) const {
+		return end;
+	}
+
 private:
 	// ソースボイスの生成
 	long CreateVoice(const std::string& filName);
