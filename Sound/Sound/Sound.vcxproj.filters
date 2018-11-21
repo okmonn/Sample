@@ -25,6 +25,24 @@
     <Filter Include="Sound\SoundFunc">
       <UniqueIdentifier>{31fac818-51ac-4869-aa2f-5efb1550fb86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Device">
+      <UniqueIdentifier>{678ca880-d967-4369-8034-ccbb9fb09c82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="List">
+      <UniqueIdentifier>{fa59dd4d-8d5f-4fb6-986b-8723e21203eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Queue">
+      <UniqueIdentifier>{60cc75f1-4da1-4509-89aa-5aa105b799e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pipeline">
+      <UniqueIdentifier>{a3c0a698-1278-41c8-bccc-90c92c8a9a80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rootsignature">
+      <UniqueIdentifier>{4c9a2217-37bc-4717-b0d5-0911beb772f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Effector">
+      <UniqueIdentifier>{13b6fac8-dec6-4de0-ab53-8961eed0a3bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -41,6 +59,24 @@
     </ClCompile>
     <ClCompile Include="Sound\Sound.cpp">
       <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\Device.cpp">
+      <Filter>Device</Filter>
+    </ClCompile>
+    <ClCompile Include="List\List.cpp">
+      <Filter>List</Filter>
+    </ClCompile>
+    <ClCompile Include="Queue\Queue.cpp">
+      <Filter>Queue</Filter>
+    </ClCompile>
+    <ClCompile Include="PIpe\Pipe.cpp">
+      <Filter>Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Root\Root.cpp">
+      <Filter>Rootsignature</Filter>
+    </ClCompile>
+    <ClCompile Include="Effector\Effector.cpp">
+      <Filter>Effector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -62,5 +98,31 @@
     <ClInclude Include="Sound\XAudio2\VoiceCallback.h">
       <Filter>Sound\XAudio2</Filter>
     </ClInclude>
+    <ClInclude Include="Device\Device.h">
+      <Filter>Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Release.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="List\List.h">
+      <Filter>List</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue\Queue.h">
+      <Filter>Queue</Filter>
+    </ClInclude>
+    <ClInclude Include="PIpe\Pipe.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Root\Root.h">
+      <Filter>Rootsignature</Filter>
+    </ClInclude>
+    <ClInclude Include="Effector\Effector.h">
+      <Filter>Effector</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\Delay.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

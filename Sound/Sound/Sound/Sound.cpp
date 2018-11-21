@@ -101,6 +101,11 @@ void Sound::Stream(void)
 			continue;
 		}
 
+		if (wave.lock()->find(index) == wave.lock()->end())
+		{
+			continue;
+		}
+
 		XAUDIO2_BUFFER buf{};
 		buf.AudioBytes = sizeof(float) * wave.lock()->at(index).size();
 		buf.pAudioData = (unsigned char*)wave.lock()->at(index).data();
