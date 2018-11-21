@@ -31,7 +31,7 @@ struct Stereo16 {
 // •¶Žš—ñ‚ÌŠm”F
 bool sound::CheckChar(const unsigned char * data, const std::string & find, const unsigned int & size)
 {
-	int index = 0;
+	unsigned int index = 0;
 	for (unsigned int i = 0; i < size; ++i)
 	{
 		if (data[i] == find[index])

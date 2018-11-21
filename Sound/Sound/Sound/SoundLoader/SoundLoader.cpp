@@ -1,5 +1,6 @@
 #include "SoundLoader.h"
 #include "../SoundFunc/SoundFunc.h"
+#include <mutex>
 
 // ƒXƒŒƒbƒhÅ‘å”
 #define THREAD_MAX 5
@@ -81,7 +82,7 @@ int SoundLoader::Load(const std::string & fileName)
 		{
 			if (itr->joinable() == false)
 			{
-				wave[fileName].data = std::make_shared<std::vector<std::vector<float>>>();
+				wave[fileName].data = std::make_shared<std::unordered_map<int, std::vector<float>>>();
 				*itr = std::thread(&SoundLoader::Stream, this, fileName);
 				flag = false;
 				break;
@@ -95,7 +96,12 @@ int SoundLoader::Load(const std::string & fileName)
 // ”ñ“¯Šú“Ç‚İ‚İ
 void SoundLoader::Stream(const std::string & fileName)
 {
+	std::mutex m;
+	std::lock_guard<std::mutex>lock(m);
+
 	flag[fileName] = false;
+
+	int read = 0;
 
 	std::vector<float>tmp((wave[fileName].sample * ((wave[fileName].bit / 8) * wave[fileName].channel)) / 100);
 	if (tmp.size() % 2 != 0)
@@ -107,7 +113,7 @@ void SoundLoader::Stream(const std::string & fileName)
 	{
 		load[wave[fileName].channel][wave[fileName].bit](tmp, wave[fileName].file);
 
-		wave[fileName].data->emplace_back(tmp);
+		wave[fileName].data->insert(std::make_pair(read++, tmp));
 	}
 
 	fclose(wave[fileName].file);

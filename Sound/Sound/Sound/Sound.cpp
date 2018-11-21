@@ -1,9 +1,13 @@
 #include "Sound.h"
 #include "XAudio2/XAudio2.h"
+#include "XAudio2/VoiceCallback.h"
 #include "SoundLoader/SoundLoader.h"
 #include "Destroy.h"
 #include <ks.h>
 #include <ksmedia.h>
+
+// バッファの最大数
+#define BUF_MAX 3
 
 // スピーカー設定用配列
 const DWORD spk[] = {
@@ -20,8 +24,9 @@ const DWORD spk[] = {
 // コンストラクタ
 Sound::Sound() : 
 	audio(XAudio2::Get()), loader(SoundLoader::Get()), 
-	voice(nullptr), threadFlag(true)
+	voice(nullptr), loop(false), end(false), threadFlag(true), index(0)
 {
+	call = std::make_unique<VoiceCallback>();
 }
 
 // デストラクタ
@@ -52,7 +57,7 @@ long Sound::CreateVoice(const std::string& fileName)
 	desc.Samples.wValidBitsPerSample = desc.Format.wBitsPerSample;
 	desc.SubFormat                   = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
 
-	auto hr = audio.GetAudio()->CreateSourceVoice(&voice, (WAVEFORMATEX*)(&desc), 0, 1.0f, nullptr);
+	auto hr = audio.GetAudio()->CreateSourceVoice(&voice, (WAVEFORMATEX*)(&desc), 0, 1.0f, &(*call));
 	if (FAILED(hr))
 	{
 		OutputDebugString(_T("\nソースボイスの生成：失敗\n"));
@@ -68,6 +73,8 @@ void Sound::Load(const std::string & fileName)
 
 	CreateVoice(fileName);
 
+	name = fileName;
+
 	wave = loader.GetWave(fileName);
 
 	if (th.joinable() == false)
@@ -79,8 +86,78 @@ void Sound::Load(const std::string & fileName)
 // 非同期処理
 void Sound::Stream(void)
 {
+	XAUDIO2_VOICE_STATE st{};
+
 	while (threadFlag)
 	{
+		if (loader.GetWave(name)->size() <= BUF_MAX)
+		{
+			continue;
+		}
 
+		voice->GetState(&st);
+		if (st.BuffersQueued >= BUF_MAX)
+		{
+			continue;
+		}
+
+		XAUDIO2_BUFFER buf{};
+		buf.AudioBytes = sizeof(float) * wave.lock()->at(index).size();
+		buf.pAudioData = (unsigned char*)wave.lock()->at(index).data();
+
+		auto hr = voice->SubmitSourceBuffer(&buf);
+		if (FAILED(hr))
+		{
+			OutputDebugString(_T("\nバッファの追加：失敗\n"));
+			continue;
+		}
+
+		if (index + 1 >= wave.lock()->size() && loader.GetFlag(name) == true)
+		{
+			if (loop == false)
+			{
+				Stop();
+			}
+			index = 0;
+			end = true;
+		}
+		else
+		{
+			++index;
+		}
 	}
 }
+
+// 再生
+long Sound::Play(const bool & loop)
+{
+	auto hr = voice->Start();
+	if (FAILED(hr))
+	{
+		OutputDebugString(_T("\n再生：失敗\n"));
+		return hr;
+	}
+
+	this->loop = loop;
+
+	return hr;
+}
+
+// 停止
+long Sound::Stop(void)
+{
+	auto hr = voice->Stop();
+	if (FAILED(hr))
+	{
+		OutputDebugString(_T("\n停止：失敗\n"));
+	}
+
+	return hr;
+}
+
+// コールバックハンドルの取得
+void * Sound::GetHandle(void) const
+{
+	return call->handle;
+}
+

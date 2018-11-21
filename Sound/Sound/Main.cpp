@@ -1,8 +1,10 @@
-#include "Sound/SoundLoader/SoundLoader.h"
+#include "Sound/Sound.h"
 
 int main()
 {
-	SoundLoader::Get().Load("sample0.wav");
+	Sound s;
+	s.Load("sample0.wav");
+	s.Play();
 
 	while (true)
 	{

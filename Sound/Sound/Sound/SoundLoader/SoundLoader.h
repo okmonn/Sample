@@ -1,5 +1,5 @@
 #pragma once
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
 #include <memory>
@@ -18,7 +18,7 @@ class SoundLoader
 		//量子化ビット数
 		int bit;
 		//波形情報
-		std::shared_ptr<std::vector<std::vector<float>>>data;
+		std::shared_ptr<std::unordered_map<int, std::vector<float>>>data;
 	};
 
 public:
@@ -47,8 +47,12 @@ public:
 		return wave[fileName].bit;
 	}
 	// 波形データの取得
-	std::shared_ptr<std::vector<std::vector<float>>> GetWave(const std::string& fileName) {
+	std::shared_ptr<std::unordered_map<int, std::vector<float>>> GetWave(const std::string& fileName) {
 		return wave[fileName].data;
+	}
+	// 読み込み完了フラグの取得
+	bool GetFlag(const std::string& fileName) {
+		return flag[fileName];
 	}
 
 private:
@@ -70,14 +74,14 @@ private:
 	bool threadFlag;
 
 	// 波形情報
-	std::map<std::string, Wave>wave;
+	std::unordered_map<std::string, Wave>wave;
 
 	// 波形読み込み完了フラグ
-	std::map<std::string, bool>flag;
+	std::unordered_map<std::string, bool>flag;
 
 	// 読み込みスレッド
 	std::vector<std::thread>th;
 
 	// 読み込みテーブル
-	std::map<int, std::map<int, std::function<void(std::vector<float>& tmp, FILE* file)>>>load;
+	std::unordered_map<int, std::unordered_map<int, std::function<void(std::vector<float>& tmp, FILE* file)>>>load;
 };

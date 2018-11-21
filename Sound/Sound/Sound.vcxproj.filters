@@ -59,5 +59,8 @@
     <ClInclude Include="Sound\Sound.h">
       <Filter>Sound</Filter>
     </ClInclude>
+    <ClInclude Include="Sound\XAudio2\VoiceCallback.h">
+      <Filter>Sound\XAudio2</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

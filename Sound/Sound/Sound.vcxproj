@@ -130,6 +130,7 @@
     <ClInclude Include="Sound\Sound.h" />
     <ClInclude Include="Sound\SoundFunc\SoundFunc.h" />
     <ClInclude Include="Sound\SoundLoader\SoundLoader.h" />
+    <ClInclude Include="Sound\XAudio2\VoiceCallback.h" />
     <ClInclude Include="Sound\XAudio2\XAudio2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
