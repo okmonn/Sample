@@ -6,9 +6,10 @@
 
 struct ID3D12DescriptorHeap;
 struct ID3D12Resource;
+class Device;
 class Queue;
 class List;
-class Device;
+class Fence;
 class Root;
 class Pipe;
 
@@ -77,10 +78,13 @@ private:
 	std::weak_ptr<Device>dev;
 
 	// キュー
-	std::unique_ptr<Queue>queue;
+	std::shared_ptr<Queue>queue;
 
 	// リスト
 	std::unique_ptr<List>list;
+
+	// フェンス
+	std::unique_ptr<Fence>fence;
 
 	// ルート
 	std::weak_ptr<Root>root;

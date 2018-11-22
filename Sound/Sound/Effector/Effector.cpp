@@ -2,6 +2,7 @@
 #include "../Device/Device.h"
 #include "../Queue/Queue.h"
 #include "../List/List.h"
+#include "../Fence/Fence.h"
 #include "../Root/Root.h"
 #include "../Pipe/Pipe.h"
 #include "../Release.h"
@@ -16,8 +17,9 @@ Effector::Effector(std::weak_ptr<Device>dev, std::weak_ptr<Root>root, std::weak_
 	param = {};
 	info.clear();
 
-	queue = std::make_unique<Queue>(dev, D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_COMPUTE);
+	queue = std::make_shared<Queue>(dev, D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_COMPUTE);
 	list  = std::make_unique<List>(dev, D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_COMPUTE);
+	fence = std::make_unique<Fence>(dev, queue);
 
 	Init();
 }

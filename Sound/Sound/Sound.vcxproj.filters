@@ -43,6 +43,9 @@
     <Filter Include="Effector">
       <UniqueIdentifier>{13b6fac8-dec6-4de0-ab53-8961eed0a3bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fence">
+      <UniqueIdentifier>{4449456a-d072-44c5-add1-4aa3994bf67f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -77,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="Effector\Effector.cpp">
       <Filter>Effector</Filter>
+    </ClCompile>
+    <ClCompile Include="Fence\Fence.cpp">
+      <Filter>Fence</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="Effector\Effector.h">
       <Filter>Effector</Filter>
+    </ClInclude>
+    <ClInclude Include="Fence\Fence.h">
+      <Filter>Fence</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

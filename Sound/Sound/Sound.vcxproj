@@ -121,6 +121,7 @@
   <ItemGroup>
     <ClCompile Include="Device\Device.cpp" />
     <ClCompile Include="Effector\Effector.cpp" />
+    <ClCompile Include="Fence\Fence.cpp" />
     <ClCompile Include="List\List.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PIpe\Pipe.cpp" />
@@ -134,6 +135,7 @@
   <ItemGroup>
     <ClInclude Include="Device\Device.h" />
     <ClInclude Include="Effector\Effector.h" />
+    <ClInclude Include="Fence\Fence.h" />
     <ClInclude Include="List\List.h" />
     <ClInclude Include="PIpe\Pipe.h" />
     <ClInclude Include="Queue\Queue.h" />
