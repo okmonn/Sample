@@ -119,6 +119,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application\Application.cpp" />
     <ClCompile Include="Device\Device.cpp" />
     <ClCompile Include="Effector\Effector.cpp" />
     <ClCompile Include="Fence\Fence.cpp" />
@@ -133,6 +134,7 @@
     <ClCompile Include="Sound\XAudio2\XAudio2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\Application.h" />
     <ClInclude Include="Device\Device.h" />
     <ClInclude Include="Effector\Effector.h" />
     <ClInclude Include="Fence\Fence.h" />

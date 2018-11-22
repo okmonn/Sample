@@ -42,6 +42,11 @@ public:
 	// デストラクタ
 	~Effector();
 
+	// パラメータのセット
+	void SetParam(const float& attenuation, const float& time, const int& loop, const int& sample = 44100) {
+		param = { attenuation, time, loop, sample };
+	}
+
 	// 実行
 	void Execution(const std::vector<float>& wave, std::vector<float>& adaptation);
 

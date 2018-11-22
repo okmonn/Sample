@@ -184,6 +184,8 @@ void Effector::UAV(const std::string & name, const unsigned int & stride, const 
 // èâä˙âª
 void Effector::Init(void)
 {
+	CreateHeap();
+
 	CBV("b0", sizeof(Param));
 	UAV("u0", sizeof(float), DATA_MAX);
 }
@@ -204,7 +206,7 @@ void Effector::Execution(const std::vector<float> & wave, std::vector<float> & a
 	auto handle = heap->GetGPUDescriptorHandleForHeapStart();
 	list->GetList()->SetComputeRootDescriptorTable(0, handle);
 	handle.ptr += dev.lock()->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	list->GetList()->SetGraphicsRootDescriptorTable(1, handle);
+	list->GetList()->SetComputeRootDescriptorTable(1, handle);
 
 	list->GetList()->Dispatch(wave.size(), 1, 1);
 
@@ -212,5 +214,7 @@ void Effector::Execution(const std::vector<float> & wave, std::vector<float> & a
 
 	queue->Get()->ExecuteCommandLists(1, reinterpret_cast<ID3D12CommandList* const*>(list->GetList()));
 
-	adaptation.assign(info["u0"].data, info["u0"].data + DATA_MAX);
+	fence->Wait();
+
+	adaptation.assign(info["u0"].data, info["u0"].data + wave.size());
 }

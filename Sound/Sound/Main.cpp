@@ -1,12 +1,13 @@
-#include "Sound/Sound.h"
+#include "Application/Application.h"
+#include <Windows.h>
 
 int main()
 {
-	Sound s;
-	s.Load("sample.wav");
-	s.Play();
+	auto& a = Application::Get();
+	a.Load("animal.wav");
+	a.Play();
 
-	while (true)
+	while (!(GetKeyState(VK_ESCAPE) & 0x80))
 	{
 
 	}

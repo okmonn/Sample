@@ -10,12 +10,13 @@ struct IXAudio2SourceVoice;
 class XAudio2;
 class VoiceCallback;
 class SoundLoader;
+class Effector;
 
 class Sound
 {
 public:
 	// コンストラクタ
-	Sound();
+	Sound(std::weak_ptr<Effector>effect);
 	// デストラクタ
 	~Sound();
 
@@ -23,7 +24,7 @@ public:
 	void Load(const std::string& fileName);
 
 	// 再生
-	long Play(const bool& loop = false);
+	long Play(const bool& loop);
 
 	// 停止
 	long Stop(void);
@@ -34,6 +35,21 @@ public:
 	// 再生終了フラグの取得
 	bool GetEnd(void) const {
 		return end;
+	}
+	// 読み取り配列番号の取得
+	unsigned int GetRead(void) const {
+		return read;
+	}
+	// 配列番号の取得
+	unsigned int GetIndex(void) const {
+		return index;
+	}
+	// 波形データの取得
+	std::vector<float> GetWave(void) {
+		return wave[index];
+	}
+	std::vector<float> GetWave(const unsigned int& i) {
+		return wave[i];
 	}
 
 private:
@@ -49,6 +65,9 @@ private:
 
 	// ローダー
 	SoundLoader& loader;
+
+	// エフェクター
+	std::weak_ptr<Effector>effect;
 	
 	// コールバック
 	std::unique_ptr<VoiceCallback>call;
@@ -65,6 +84,9 @@ private:
 	// スレッドフラグ
 	bool threadFlag;
 
+	// 読み取り配列番号
+	unsigned int read;
+
 	// 配列番号
 	unsigned int index;
 
@@ -74,6 +96,6 @@ private:
 	// 非同期スレッド
 	std::thread th;
 
-	//波形データ
-	std::weak_ptr<std::unordered_map<int, std::vector<float>>>wave;
+	// 波形データ
+	std::vector<std::vector<float>>wave;
 };

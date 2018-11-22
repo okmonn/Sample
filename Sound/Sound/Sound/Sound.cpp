@@ -2,6 +2,7 @@
 #include "XAudio2/XAudio2.h"
 #include "XAudio2/VoiceCallback.h"
 #include "SoundLoader/SoundLoader.h"
+#include "../Effector/Effector.h"
 #include "Destroy.h"
 #include <ks.h>
 #include <ksmedia.h>
@@ -22,10 +23,12 @@ const DWORD spk[] = {
 };
 
 // コンストラクタ
-Sound::Sound() : 
-	audio(XAudio2::Get()), loader(SoundLoader::Get()), 
-	voice(nullptr), loop(false), end(false), threadFlag(true), index(0)
+Sound::Sound(std::weak_ptr<Effector>effect) :
+	audio(XAudio2::Get()), loader(SoundLoader::Get()), effect(effect),
+	voice(nullptr), loop(false), end(false), threadFlag(true), read(0), index(0)
 {
+	wave.resize(BUF_MAX);
+
 	call = std::make_unique<VoiceCallback>();
 }
 
@@ -75,8 +78,6 @@ void Sound::Load(const std::string & fileName)
 
 	name = fileName;
 
-	wave = loader.GetWave(fileName);
-
 	if (th.joinable() == false)
 	{
 		th = std::thread(&Sound::Stream, this);
@@ -101,14 +102,16 @@ void Sound::Stream(void)
 			continue;
 		}
 
-		if (wave.lock()->find(index) == wave.lock()->end())
+		if (loader.GetWave(name)->find(read) == loader.GetWave(name)->end())
 		{
 			continue;
 		}
 
+		effect.lock()->Execution(loader.GetWave(name)->at(read), wave[index]);
+
 		XAUDIO2_BUFFER buf{};
-		buf.AudioBytes = sizeof(float) * wave.lock()->at(index).size();
-		buf.pAudioData = (unsigned char*)wave.lock()->at(index).data();
+		buf.AudioBytes = sizeof(float) * wave[index].size();
+		buf.pAudioData = (unsigned char*)wave[index].data();
 
 		auto hr = voice->SubmitSourceBuffer(&buf);
 		if (FAILED(hr))
@@ -117,18 +120,20 @@ void Sound::Stream(void)
 			continue;
 		}
 
-		if (index + 1 >= wave.lock()->size() && loader.GetFlag(name) == true)
+		if (read + 1 >= loader.GetWave(name)->size() && loader.GetFlag(name) == true)
 		{
 			if (loop == false)
 			{
 				Stop();
 			}
+			read  = 0;
 			index = 0;
-			end = true;
+			end   = true;
 		}
 		else
 		{
-			++index;
+			++read;
+			index = (index + 1 >= BUF_MAX) ? 0 : ++index;
 		}
 	}
 }
