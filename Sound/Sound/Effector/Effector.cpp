@@ -8,7 +8,7 @@
 #include "../Release.h"
 
 // データサイズ
-#define DATA_MAX 1764
+#define DATA_MAX 176400
 
 // コンストラクタ
 Effector::Effector(std::weak_ptr<Device>dev, std::weak_ptr<Root>root, std::weak_ptr<Pipe>pipe) :
@@ -193,6 +193,11 @@ void Effector::Init(void)
 // 実行
 void Effector::Execution(const std::vector<float> & wave, std::vector<float> & adaptation)
 {
+	param.attenuation = 0.5f;
+	param.time = 0.375f;
+	param.loop = 10;
+	param.sample = 44100;
+
 	memcpy(info["b0"].data, &param, sizeof(Param));
 	memcpy(info["u0"].data, &wave[0], sizeof(float) * wave.size());
 
@@ -208,11 +213,15 @@ void Effector::Execution(const std::vector<float> & wave, std::vector<float> & a
 	handle.ptr += dev.lock()->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	list->GetList()->SetComputeRootDescriptorTable(1, handle);
 
-	list->GetList()->Dispatch(wave.size(), 1, 1);
+	list->GetList()->Dispatch(wave.size() / 100, 1, 1);
 
 	list->GetList()->Close();
 
-	queue->Get()->ExecuteCommandLists(1, reinterpret_cast<ID3D12CommandList* const*>(list->GetList()));
+	ID3D12CommandList* com[] = {
+		list->GetList(),
+	};
+
+	queue->Get()->ExecuteCommandLists(1, com);
 
 	fence->Wait();
 

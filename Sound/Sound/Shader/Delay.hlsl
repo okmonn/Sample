@@ -35,16 +35,17 @@ cbuffer Param : register(b0)
 RWStructuredBuffer<float> real : register(u0);
 
 [RootSignature(RS)]
-[numthreads(1, 1, 1)]
+[numthreads(100, 1, 1)]
 void CS(uint3 gID : SV_GroupID, uint3 gtID : SV_GroupThreadID, uint3 disID : SV_DispatchThreadID)
 {
    //バックアップ
-    float back = real[gID.x];
+    float back = real[disID.x];
 
     for (int n = 1; n <= loop; ++n)
     {
-        float m = gID.x - n * (sample * time);
-        real[gID.x] += (m >= 0.0f) ? pow(2.0f, n) * back : 0.0f;
+        float m = disID.x - n * (sample * time);
+        //real[gID.x] = m;
+        real[disID.x] += (m >= 0.0f) ? pow(attenuation, n) * back : 0.0f;
     }
 
     //クリッピング
@@ -53,5 +54,18 @@ void CS(uint3 gID : SV_GroupID, uint3 gtID : SV_GroupThreadID, uint3 disID : SV_
         real[gID.x] = 1.0f;
     }
 
-    GroupMemoryBarrierWithGroupSync();
+    //real[gID.x] = back * 10.0f;
+    //if(real[gID.x] >= 0.0f)
+    //{
+    //    real[gID.x] = atan(real[gID.x]) / (3.14159265f / 2.0f);
+    //}
+    //else if(real[gID.x] < -0.0f)
+    //{
+    //    real[gID.x] = atan(real[gID.x]) / (3.14159265f / 2.0f) * 0.1f;
+    //}
+
+    //real[gID.x] *= 0.5f;
+
+    AllMemoryBarrierWithGroupSync();
+
 }

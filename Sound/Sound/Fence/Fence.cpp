@@ -7,6 +7,7 @@
 Fence::Fence(std::weak_ptr<Device>dev, std::weak_ptr<Queue>queue) : 
 	dev(dev), queue(queue), fence(nullptr), handle(CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS)), cnt(0)
 {
+	CreateFence();
 }
 
 // デストラクタ

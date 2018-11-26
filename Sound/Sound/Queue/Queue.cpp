@@ -6,6 +6,7 @@
 Queue::Queue(std::weak_ptr<Device>dev, const D3D12_COMMAND_LIST_TYPE & type) : 
 	dev(dev), queue(nullptr)
 {
+	CreateQueue(type);
 }
 
 // デストラクタ
