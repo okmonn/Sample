@@ -32,6 +32,8 @@ class Effector
 		float time;
 		//ループ回数
 		int loop;
+		//全体の波形数からの相対数
+		unsigned int index;
 		//サンプリング周波数
 		int sample;
 	};
@@ -43,12 +45,12 @@ public:
 	~Effector();
 
 	// パラメータのセット
-	void SetParam(const float& attenuation, const float& time, const int& loop, const int& sample = 44100) {
-		param = { attenuation, time, loop, sample };
+	void SetParam(const float& attenuation, const float& time, const int& loop, const unsigned int& index, const int& sample = 44100) {
+		param = { attenuation, time, loop, index, sample };
 	}
 
 	// 実行
-	void Execution(const std::vector<float>& wave, std::vector<float>& adaptation, const unsigned int& sample = 44100);
+	void Execution(const std::vector<float>& wave, std::vector<float>& adaptation, const unsigned int& index, const unsigned int& sample = 44100);
 
 private:
 	// ヒープの生成
@@ -74,9 +76,6 @@ private:
 
 	// UAVの生成
 	void UAV(const std::string& name, const unsigned int& stride, const unsigned int& num);
-
-	// バンドルのセット
-	void Bundle(void);
 
 	// 初期化
 	void Init(void);

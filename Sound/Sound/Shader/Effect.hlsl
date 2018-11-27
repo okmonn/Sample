@@ -29,6 +29,8 @@ cbuffer Param : register(b0)
     float time;
     //ループ回数
     int loop;
+    //全体の波形数の相対数
+    uint waveIndex;
     //サンプリング周波数
     int sample;
 };
@@ -44,10 +46,14 @@ RWStructuredBuffer<float> real : register(u1);
 void Delay(uint index)
 {
     real[index] = origin[index];
+    uint2 size;
+    origin.GetDimensions(size.x, size.y);
+
+    uint num = size.x * waveIndex + index;
 
     for (int i = 1; i <= loop; ++i)
     {
-        int m = (int) (index - i * (sample * time));
+        int m = (int) (num - i * (sample * time));
 
         real[index] += (m >= 0) ? pow(attenuation, i) * origin[index] : 0.0f;
     }
@@ -125,9 +131,55 @@ void Limiter(uint index)
     }
 }
 
+// ハニング窓
+float Hanning(int index, uint size)
+{
+    return (size % 2 == 0) ?
+    //偶数
+    0.5f - 0.5f * cos(2.0f * PI * index / size) :
+    //奇数
+    0.5f - 0.5f * cos(2.0f * PI * (index + 0.5f) / size);
+}
+
+// シンク関数
+float Sinc(float index)
+{
+    return (index == 0.0f) ? 1.0f : sin(index) / index;
+}
+
+// FIR_LPF
+void FIR_LPF(uint index)
+{
+    //エッジ周波数
+    float edge = 1000.0f / sample;
+    //遷移帯域幅
+    float delta = 1000.0f / sample;
+    //遅延器の数
+    int num = (int) (3.1f / delta + 0.5f) - 1;
+    if(num % 2 != 0)
+    {
+        ++num;
+    }
+
+    float data[32];
+    int offset = num / 2;
+    for (int i = -offset; i <= offset; ++i)
+    {
+        data[offset + i] = 2.0f * edge * Sinc(2.0f * PI * edge * i);
+    }
+
+    for (int n = 0; n <= num; ++n)
+    {
+        data[n] *= Hanning(n, num + 1);
+        real[index] += (index - n >= 0) ? data[n] * origin[index - n] : 0.0f;
+    }
+}
+
 [RootSignature(RS)]
 [numthreads(1, 1, 1)]
 void CS(uint3 gID : SV_GroupID, uint3 gtID : SV_GroupThreadID, uint3 disID : SV_DispatchThreadID)
 {
+    FIR_LPF(gID.x);
+
     AllMemoryBarrierWithGroupSync();
 }

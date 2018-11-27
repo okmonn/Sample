@@ -28,6 +28,7 @@ cbuffer Param : register(b0)
     //遅延時間
     float time;
     //ループ回数
+    uint waveIndex;
     int loop;
     //サンプリング周波数
     int sample;
@@ -117,24 +118,8 @@ float Sinc(float i)
     return (i == 0.0f) ? 1.0f : sin(i) / i;
 }
 
-// FIRフィルタのLPF
-float FIR_LPF(float data[], float edge, int num)
-{
-    int offset = num / 2;
-
-    for (int i = -offset; i <= offset; ++i)
-    {
-        data[offset + i] = 2.0f * edge * Sinc(2.0f * PI * edge * i);
-    }
-
-    for (int n = 0; n < num + 1; ++n)
-    {
-        data[n] *= Hanning(n, num + 1);
-    }
-}
-
-// LPF
-void LPF(uint i)
+// FIR_LPF
+void FIR_LPF(uint index)
 {
     //エッジ周波数
     float edge = 1000.0f / sample;
@@ -148,13 +133,23 @@ void LPF(uint i)
         ++num;
     }
 
-    float data[num + 1];
-    FIR_LPF(data, edge, num);
+    float data[10];
+    //int offset = num / 2;
 
-    for (int n = 0; n <= num; ++n)
-    {
-        real[i] += (i - n >= 0) ? data[n] * origin[i - n] : 0.0f;
-    }
+    //for (int i = -offset; i <= offset; ++i)
+    //{
+    //    data[offset + i] = 2.0f * edge * Sinc(2.0f * PI * edge * i);
+    //}
+
+    //for (int n = 0; n < num + 1; ++n)
+    //{
+    //    data[n] *= Hanning(n, num + 1);
+    //}
+
+    //for (int m = 0; m <= num; ++m)
+    //{
+    //    real[index] += (index - m >= 0) ? data[m] * origin[index - m] : 0.0f;
+    //}
 }
 
 [RootSignature(RS)]

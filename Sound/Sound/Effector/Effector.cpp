@@ -195,15 +195,17 @@ void Effector::Init(void)
 }
 
 // é¿çs
-void Effector::Execution(const std::vector<float> & wave, std::vector<float> & adaptation, const unsigned int & sample)
+void Effector::Execution(const std::vector<float> & wave, std::vector<float> & adaptation, const unsigned int & index, const unsigned int & sample)
 {
 	param.attenuation = 0.5f;
 	param.time = 0.375f;
 	param.loop = 10;
+	param.index = index;
 	param.sample = sample;
 
 	memcpy(info["b0"].data, &param, sizeof(Param));
 	memcpy(info["u0"].data, &wave[0], sizeof(float) * wave.size());
+	memset(info["u1"].data, 0, sizeof(float) * wave.size());
 
 	list->Reset();
 

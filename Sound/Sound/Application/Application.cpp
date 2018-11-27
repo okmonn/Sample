@@ -31,7 +31,7 @@ void Application::Create(void)
 {
 	win = std::make_shared<Window>();
 	dev    = std::make_shared<Device>();
-	root   = std::make_shared<Root>(dev, L"Shader/Delay.hlsl");
+	root   = std::make_shared<Root>(dev, L"Shader/Effect.hlsl");
 	pipe   = std::make_shared<Pipe>(dev, root);
 	effect = std::make_shared<Effector>(dev, root, pipe);
 	sound  = std::make_shared<Sound>(effect);

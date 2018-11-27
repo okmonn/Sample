@@ -107,7 +107,7 @@ void Sound::Stream(void)
 			continue;
 		}
 
-		effect.lock()->Execution(loader.GetWave(name)->at(read), wave[index]);
+		effect.lock()->Execution(loader.GetWave(name)->at(read), wave[index], read);
 
 		XAUDIO2_BUFFER buf{};
 		buf.AudioBytes = sizeof(float) * static_cast<unsigned int>(wave[index].size());
