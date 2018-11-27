@@ -40,44 +40,45 @@ RWStructuredBuffer<float> real : register(u1);
 
 #define PI 3.14159265f
 
-// ディストーション
-void Distortion(uint i)
+// ディレイ
+void Delay(uint index)
 {
-    //波形の増幅
-    real[i] = origin[i] * 10.0f;
-    if (real[i] >= 0.0f)
-    {
-        real[i] = atan(real[i]) / (PI / 2.0f);
-    }
-    else if (real[i] < -0.0f)
-    {
-        real[i] = atan(real[i]) / (PI / 2.0f) * 0.1f;
-    }
+    real[index] = origin[index];
 
-    //音量を調節
-    real[i] *= 0.5f;
+    for (int i = 1; i <= loop; ++i)
+    {
+        int m = (int) (index - i * (sample * time));
+
+        real[index] += (m >= 0) ? pow(attenuation, i) * origin[index] : 0.0f;
+    }
 }
 
-// リミッター
-void Limiter(uint i)
+// ディストーション
+void Distortion(uint index)
 {
-    //しきい値
-    float threshold = 0.2f;
+    //増幅率
+    float gain = 10.0f;
+    //音量レベル
+    float level = 0.5f;
 
-    //振幅の修正
-    if (real[i] > threshold)
+    real[index] = origin[index] * gain;
+    
+    //クリッピング
+    if(real[index] >= 0.0f)
     {
-        real[i] = threshold;
+        real[index] = atan(real[index]) / (PI / 2.0f);
+    }
+    else if(real[index] < -0.0f)
+    {
+        real[index] = atan(real[index]) / (PI / 2.0f) * 0.1f;
+    }
 
-    }
-    else if (real[i] < -threshold)
-    {
-        real[i] = -threshold;
-    }
+    //音量調節
+    real[index] *= level;
 }
 
 // コンプレッサ
-void Compressor(uint i)
+void Compressor(uint index)
 {
     //しきい値
     float threshold = 0.2f;
@@ -86,74 +87,41 @@ void Compressor(uint i)
     //増幅率
     float gain = 1.0f / (threshold + (1.0f - threshold) * ratio);
 
+    real[index] = origin[index];
+
     //振幅の圧縮
-    if(real[i] > threshold)
+    if (real[index] > threshold)
     {
-        real[i] = threshold + (real[i] - threshold) * ratio;
-
+        real[index] = threshold + (real[index] - threshold) * ratio;
     }
-    else if (real[i] < -threshold)
+    else if (real[index] < -threshold)
     {
-        real[i] = -threshold + (real[i] + threshold) * ratio;
+        real[index] = -threshold + (real[index] + threshold) * ratio;
     }
-
-    //振幅の増幅
-    real[i] *= gain;
+    
+    real[index] *= gain;
 }
 
-// ハニング窓関数
-float Hanning(uint i, uint size)
+// リミッタ
+void Limiter(uint index)
 {
-    return (size % 2 == 0) ?
-    //偶数
-    0.5f - 0.5f * cos(2.0f * PI * i / size) :
-    //奇数
-    0.5f - 0.5f * cos(2.0f * PI * (i + 0.5f) / size);
-}
+    //しきい値
+    float threshold = 0.2f;
+    //レシオ
+    float ratio = 1.0f / 10.0f;
+    //増幅率
+    float gain = 1.0f / (threshold + (1.0f - threshold) * ratio);
 
-// シンク関数
-float Sinc(float i)
-{
-    return (i == 0.0f) ? 1.0f : sin(i) / i;
-}
+    real[index] = origin[index];
 
-// FIRフィルタのLPF
-float FIR_LPF(float data[], float edge, int num)
-{
-    int offset = num / 2;
-
-    for (int i = -offset; i <= offset; ++i)
+    //振幅の圧縮
+    if (real[index] > threshold)
     {
-        data[offset + i] = 2.0f * edge * Sinc(2.0f * PI * edge * i);
+        real[index] = threshold;
     }
-
-    for (int n = 0; n < num + 1; ++n)
+    else if (real[index] < -threshold)
     {
-        data[n] *= Hanning(n, num + 1);
-    }
-}
-
-// LPF
-void LPF(uint i)
-{
-    //エッジ周波数
-    float edge = 1000.0f / sample;
-    //遷移帯域幅
-    float delta = 1000.0f / sample;
-
-    //遅延器の数
-    int num = (int)(3.1f / delta + 0.5f) - 1;
-    if(num % 2 != 0)
-    {
-        ++num;
-    }
-
-    float data[num + 1];
-    FIR_LPF(data, edge, num);
-
-    for (int n = 0; n <= num; ++n)
-    {
-        real[i] += (i - n >= 0) ? data[n] * origin[i - n] : 0.0f;
+        real[index] = -threshold;
     }
 }
 
@@ -161,18 +129,5 @@ void LPF(uint i)
 [numthreads(1, 1, 1)]
 void CS(uint3 gID : SV_GroupID, uint3 gtID : SV_GroupThreadID, uint3 disID : SV_DispatchThreadID)
 {
-    for (int n = 1; n <= loop; ++n)
-    {
-        float m = disID.x - n * (sample * time);
-        real[disID.x] += (m >= 0.0f) ? pow(attenuation, n) * origin[gID.x] : 0.0f;
-    }
-
-    //クリッピング
-    if (real[gID.x] > 1.0f)
-    {
-        real[gID.x] = 1.0f;
-    }
-
     AllMemoryBarrierWithGroupSync();
-
 }

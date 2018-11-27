@@ -110,7 +110,7 @@ void Sound::Stream(void)
 		effect.lock()->Execution(loader.GetWave(name)->at(read), wave[index]);
 
 		XAUDIO2_BUFFER buf{};
-		buf.AudioBytes = sizeof(float) * wave[index].size();
+		buf.AudioBytes = sizeof(float) * static_cast<unsigned int>(wave[index].size());
 		buf.pAudioData = (unsigned char*)wave[index].data();
 
 		auto hr = voice->SubmitSourceBuffer(&buf);

@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "../Window/Window.h"
 #include "../Device/Device.h"
 #include "../Root/Root.h"
 #include "../Pipe/Pipe.h"
@@ -28,11 +29,34 @@ Application::~Application()
 // クラスの生成
 void Application::Create(void)
 {
+	win = std::make_shared<Window>();
 	dev    = std::make_shared<Device>();
 	root   = std::make_shared<Root>(dev, L"Shader/Delay.hlsl");
 	pipe   = std::make_shared<Pipe>(dev, root);
 	effect = std::make_shared<Effector>(dev, root, pipe);
 	sound  = std::make_shared<Sound>(effect);
+}
+
+// メッセージの確認
+bool Application::CheckMsg(void)
+{
+	static MSG msg{};
+
+	if (msg.message == WM_QUIT)
+	{
+		return false;
+	}
+
+	//呼び出し側スレッドが所有しているウィンドウに送信されたメッセージの保留されている物を取得
+	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	{
+		//仮想キーメッセージを文字メッセージに変換
+		TranslateMessage(&msg);
+		//1つのウィドウプロシージャにメッセージを送出する
+		DispatchMessage(&msg);
+	}
+
+	return true;
 }
 
 // サウンドファイルの読み込み

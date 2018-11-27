@@ -2,6 +2,7 @@
 #include <string>
 #include <memory>
 
+class Window;
 class Device;
 class Root;
 class Pipe;
@@ -19,6 +20,9 @@ public:
 		static Application instance;
 		return instance;
 	}
+
+	// メッセージの確認
+	bool CheckMsg(void);
 
 	// サウンドファイルの読み込み
 	void Load(const std::string& fileName);
@@ -41,6 +45,8 @@ private:
 	void Create(void);
 
 
+	// ウィンドウ
+	std::shared_ptr<Window>win;
 	// デバイス
 	std::shared_ptr<Device>dev;
 

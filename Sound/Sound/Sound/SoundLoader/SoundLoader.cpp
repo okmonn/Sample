@@ -103,7 +103,7 @@ void SoundLoader::Stream(const std::string & fileName)
 
 	int read = 0;
 
-	std::vector<float>tmp((wave[fileName].sample * ((wave[fileName].bit / 8) * wave[fileName].channel)));
+	std::vector<float>tmp((wave[fileName].sample * ((wave[fileName].bit / 8) * wave[fileName].channel)) / 100);
 	if (tmp.size() % 2 != 0)
 	{
 		tmp.resize(tmp.size() + 1);

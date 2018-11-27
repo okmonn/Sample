@@ -7,8 +7,11 @@
 #include "../Pipe/Pipe.h"
 #include "../Release.h"
 
+// リソース数
+#define RSC_MAX 3
+
 // データサイズ
-#define DATA_MAX 176400
+#define DATA_MAX 1764
 
 // コンストラクタ
 Effector::Effector(std::weak_ptr<Device>dev, std::weak_ptr<Root>root, std::weak_ptr<Pipe>pipe) :
@@ -41,7 +44,7 @@ long Effector::CreateHeap(void)
 	D3D12_DESCRIPTOR_HEAP_DESC desc{};
 	desc.Flags          = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	desc.NodeMask       = 0;
-	desc.NumDescriptors = 2;
+	desc.NumDescriptors = RSC_MAX;
 	desc.Type           = D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
 	auto hr = dev.lock()->Get()->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&heap));
@@ -188,15 +191,16 @@ void Effector::Init(void)
 
 	CBV("b0", sizeof(Param));
 	UAV("u0", sizeof(float), DATA_MAX);
+	UAV("u1", sizeof(float), DATA_MAX);
 }
 
 // 実行
-void Effector::Execution(const std::vector<float> & wave, std::vector<float> & adaptation)
+void Effector::Execution(const std::vector<float> & wave, std::vector<float> & adaptation, const unsigned int & sample)
 {
 	param.attenuation = 0.5f;
 	param.time = 0.375f;
 	param.loop = 10;
-	param.sample = 44100;
+	param.sample = sample;
 
 	memcpy(info["b0"].data, &param, sizeof(Param));
 	memcpy(info["u0"].data, &wave[0], sizeof(float) * wave.size());
@@ -208,12 +212,17 @@ void Effector::Execution(const std::vector<float> & wave, std::vector<float> & a
 
 	list->GetList()->SetDescriptorHeaps(1, &heap);
 
-	auto handle = heap->GetGPUDescriptorHandleForHeapStart();
-	list->GetList()->SetComputeRootDescriptorTable(0, handle);
-	handle.ptr += dev.lock()->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	list->GetList()->SetComputeRootDescriptorTable(1, handle);
+	auto size = dev.lock()->Get()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	list->GetList()->Dispatch(wave.size() / 100, 1, 1);
+	auto handle = heap->GetGPUDescriptorHandleForHeapStart();
+	handle.ptr = heap->GetGPUDescriptorHandleForHeapStart().ptr + size * info["b0"].index;
+	list->GetList()->SetComputeRootDescriptorTable(0, handle);
+	handle.ptr = heap->GetGPUDescriptorHandleForHeapStart().ptr + size * info["u0"].index;
+	list->GetList()->SetComputeRootDescriptorTable(1, handle);
+	handle.ptr = heap->GetGPUDescriptorHandleForHeapStart().ptr + size * info["u1"].index;
+	list->GetList()->SetComputeRootDescriptorTable(2, handle);
+
+	list->GetList()->Dispatch(static_cast<unsigned int>(wave.size()), 1, 1);
 
 	list->GetList()->Close();
 
@@ -225,5 +234,5 @@ void Effector::Execution(const std::vector<float> & wave, std::vector<float> & a
 
 	fence->Wait();
 
-	adaptation.assign(info["u0"].data, info["u0"].data + wave.size());
+	adaptation.assign(info["u1"].data, info["u1"].data + wave.size());
 }
