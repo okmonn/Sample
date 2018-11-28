@@ -11,7 +11,7 @@
 #define RSC_MAX 3
 
 // データサイズ
-#define DATA_MAX 1764
+#define DATA_MAX 44100
 
 // コンストラクタ
 Effector::Effector(std::weak_ptr<Device>dev, std::weak_ptr<Root>root, std::weak_ptr<Pipe>pipe) :

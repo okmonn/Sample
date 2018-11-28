@@ -115,8 +115,6 @@ void Limiter(uint index)
     float threshold = 0.2f;
     //レシオ
     float ratio = 1.0f / 10.0f;
-    //増幅率
-    float gain = 1.0f / (threshold + (1.0f - threshold) * ratio);
 
     real[index] = origin[index];
 
@@ -147,7 +145,7 @@ float Sinc(float index)
     return (index == 0.0f) ? 1.0f : sin(index) / index;
 }
 
-// FIR_LPF
+// FIRローパスフィルタ
 void FIR_LPF(uint index)
 {
     //エッジ周波数
@@ -173,13 +171,98 @@ void FIR_LPF(uint index)
         data[n] *= Hanning(n, num + 1);
         real[index] += (index - n >= 0) ? data[n] * origin[index - n] : 0.0f;
     }
+
+    //クリッピング
+    if(real[index] > 1.0f)
+    {
+        real[index] = 1.0f;
+    }
+    else if(real[index] < -1.0f)
+    {
+        real[index] = -1.0f;
+    }
+}
+
+// FIRハイパスフィルタ
+void FIR_HPF(uint index)
+{
+    //エッジ周波数
+    float edge = 1000.0f / sample;
+    //遷移帯域幅
+    float delta = 1000.0f / sample;
+    //遅延器の数
+    int num = (int) (3.1f / delta + 0.5f) - 1;
+    if (num % 2 != 0)
+    {
+        ++num;
+    }
+
+    float data[32];
+    int offset = num / 2;
+    for (int i = -offset; i <= offset; ++i)
+    {
+        data[offset + i] = Sinc(PI * i) - 2.0f * edge * Sinc(2.0f * PI * edge * i);
+    }
+
+    for (int n = 0; n <= num; ++n)
+    {
+        data[n] *= Hanning(n, num + 1);
+        real[index] += (index - n >= 0) ? data[n] * origin[index - n] : 0.0f;
+    }
+
+     //クリッピング
+    if (real[index] > 1.0f)
+    {
+        real[index] = 1.0f;
+    }
+    else if (real[index] < -1.0f)
+    {
+        real[index] = -1.0f;
+    }
+}
+
+// トレモロ
+void Tremolo(uint index)
+{
+    //変調深度
+    float depth = 0.5f;
+    //変調周波数
+    float rate = 5.0f;
+
+    //変調信号
+    float signal = 1.0f + depth * sin((2.0f * PI * rate * index) / sample);
+
+    real[index] = signal * origin[index];
+}
+
+// ビブラート
+void Vibrato(uint index)
+{
+     //変調深度
+    float depth = sample * 0.002f;
+    //変調周波数
+    float rate = 5.0f;
+
+    float tau = (sample * 0.002f) + depth * sin((2.0f * PI * rate * index) / sample);
+
+    float t = (float) index - tau;
+    int m = (int) t;
+    float delta = t - (float) m;
+
+    uint2 size;
+    origin.GetDimensions(size.x, size.y);
+
+    if (m >= 0 && m + 1 < size.x)
+    {
+        real[index] = delta * origin[m + 1] + (1.0f - delta) * origin[m];
+    }
 }
 
 [RootSignature(RS)]
 [numthreads(1, 1, 1)]
 void CS(uint3 gID : SV_GroupID, uint3 gtID : SV_GroupThreadID, uint3 disID : SV_DispatchThreadID)
 {
-    FIR_LPF(gID.x);
+    Tremolo(gID.x);
 
     AllMemoryBarrierWithGroupSync();
 }
